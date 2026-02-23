@@ -12,4 +12,11 @@ class DashboardController extends Controller
         return view('admin.dashboard.view');
         
     }
+
+    // -*Halaman PPTK- 
+    public function pptk_view(){
+
+        return view('pptk.dashboard.view');
+        
+    }
 }

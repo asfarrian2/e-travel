@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AnggaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KoderekeningController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\RincanggaranController;
 use App\Http\Controllers\SubkegiatanController;
 use App\Http\Controllers\TahunController;
 use App\Http\Controllers\UserController;
@@ -56,3 +58,26 @@ Route::get('/admin/kegiatan/koderekening/status{id_tahun}', [KoderekeningControl
 
 });
 //
+
+//--*PPTK--
+Route::group(['middleware' => ['auth', 'role:pptk']], function () {
+//--PPTK-Dashboard--
+Route::get('/dashboard', [DashboardController::class, 'pptk_view']);
+//--PPTK-Anggaran--
+Route::get('/anggaran', [AnggaranController::class, 'view']);
+Route::post('/anggaran/store', [AnggaranController::class, 'store'])->name('a.anggaran');
+Route::post('/anggaran/edit', [AnggaranController::class, 'edit']);
+Route::post('/anggaran/update', [AnggaranController::class, 'update'])->name('u.anggaran');
+Route::get('/anggaran/hapus/{id_anggaran}', [AnggaranController::class, 'hapus']);
+//--PPTK-Rincian Anggaran--
+Route::post('/rinciananggaran/add', [RincanggaranController::class, 'add']);
+Route::post('/rinciananggaran/store', [RincanggaranController::class, 'store'])->name('a.rincanggaran');
+Route::post('/rinciananggaran/edit', [RincanggaranController::class, 'edit']);
+Route::post('/rinciananggaran/update', [RincanggaranController::class, 'update'])->name('u.rincanggaran');
+Route::get('/rinciananggaran/hapus/{id_rincanggaran}', [RincanggaranController::class, 'hapus']);
+
+});
+
+//(--------AJAX---------)//
+Route::get('/get-anggaran', [AnggaranController::class, 'getAnggaran'])->name('get.anggaran');
+Route::get('/get-subanggaran', [AnggaranController::class, 'getSubAnggaran'])->name('get.subanggaran');
