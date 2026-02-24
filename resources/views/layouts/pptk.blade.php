@@ -122,6 +122,15 @@
 							<span class="nav-text">Anggaran</span>
 						</a>
                     </li>
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"  @if(Request::is('/perjadin*')) style="background-color: #eefaf9;" @endif>
+							<i class="flaticon-381-location-3" @if(Request::is('perjadin*')) style="color: #5bcfc5;" @endif></i>
+							<span class="nav-text">Perjalanan Dinas</span>
+						</a>
+                        <ul aria-expanded="false">
+                            <li @if(Request::is('perjadin/dalamdaerah*')) class="mm-active" @endif><a href="/perjadin/dalamdaerah" @if(Request::is('perjadin/dalamdaerah*')) class="mm-active" @endif>Dalam Daerah</a></li>
+                            <li @if(Request::is('perjadin/luardaerah*')) class="mm-active" @endif><a href="/perjadin/luardaerah" @if(Request::is('perjadin/luardaerah*')) class="mm-active" @endif>Luar Daerah</a></li>
+                        </ul>
+                    </li>
                     <div class="copyright">
                     <p><strong>Other</strong></p>
                     </div>

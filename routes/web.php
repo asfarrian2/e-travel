@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KoderekeningController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PerjadinController;
 use App\Http\Controllers\RincanggaranController;
 use App\Http\Controllers\SubkegiatanController;
 use App\Http\Controllers\TahunController;
@@ -75,6 +76,12 @@ Route::post('/rinciananggaran/store', [RincanggaranController::class, 'store'])-
 Route::post('/rinciananggaran/edit', [RincanggaranController::class, 'edit']);
 Route::post('/rinciananggaran/update', [RincanggaranController::class, 'update'])->name('u.rincanggaran');
 Route::get('/rinciananggaran/hapus/{id_rincanggaran}', [RincanggaranController::class, 'hapus']);
+//--PPTK-Perjadin--
+Route::get('/perjadin', [PerjadinController::class, 'viewd']);
+Route::post('/perjadin/store', [PerjadinController::class, 'store'])->name('a.perjadin');
+Route::post('/perjadin/edit', [PerjadinController::class, 'edit']);
+Route::post('/perjadin/update', [PerjadinController::class, 'update'])->name('u.perjadin');
+Route::get('/perjadin/hapus/{id_anggaran}', [PerjadinController::class, 'hapus']);
 
 });
 

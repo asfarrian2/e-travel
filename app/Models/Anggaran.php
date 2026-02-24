@@ -27,4 +27,10 @@ class Anggaran extends Model
         return $this->hasMany(RincAnggaran::class, 'id_anggaran', 'id_anggaran');
     }
 
+    //Relasi ke Rincian Perjalanan
+    public function perjalanan()
+    {
+        return $this->hasMany(Perjalanan::class, 'id_anggaran', 'id_anggaran');
+    }
+
 }

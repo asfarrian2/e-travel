@@ -69,6 +69,114 @@ let dataSet = [
     this.nodes().to$().removeClass('selected')
     });
 
+	//data-0
+    var table = $('#data-0').DataTable({
+        createdRow: function ( row, data, index ) {
+           $(row).addClass('selected')
+        } ,
+		language: {
+			paginate: {
+			  next: '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',
+			  previous: '<i class="fa fa-angle-double-left" aria-hidden="true"></i>' 
+			}
+		  }
+    });
+      
+    table.on('click', 'tbody tr', function() {
+    var $row = table.row(this).nodes().to$();
+    var hasClass = $row.hasClass('selected');
+    if (hasClass) {
+        $row.removeClass('selected')
+    } else {
+        $row.addClass('selected')
+    }
+    })
+    
+    table.rows().every(function() {
+    this.nodes().to$().removeClass('selected')
+    });
+
+	//data-1
+    var table = $('#data-1').DataTable({
+        createdRow: function ( row, data, index ) {
+           $(row).addClass('selected')
+        } ,
+		language: {
+			paginate: {
+			  next: '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',
+			  previous: '<i class="fa fa-angle-double-left" aria-hidden="true"></i>' 
+			}
+		  }
+    });
+      
+    table.on('click', 'tbody tr', function() {
+    var $row = table.row(this).nodes().to$();
+    var hasClass = $row.hasClass('selected');
+    if (hasClass) {
+        $row.removeClass('selected')
+    } else {
+        $row.addClass('selected')
+    }
+    })
+    
+    table.rows().every(function() {
+    this.nodes().to$().removeClass('selected')
+    });
+
+	//data-2
+    var table = $('#data-2').DataTable({
+        createdRow: function ( row, data, index ) {
+           $(row).addClass('selected')
+        } ,
+		language: {
+			paginate: {
+			  next: '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',
+			  previous: '<i class="fa fa-angle-double-left" aria-hidden="true"></i>' 
+			}
+		  }
+    });
+      
+    table.on('click', 'tbody tr', function() {
+    var $row = table.row(this).nodes().to$();
+    var hasClass = $row.hasClass('selected');
+    if (hasClass) {
+        $row.removeClass('selected')
+    } else {
+        $row.addClass('selected')
+    }
+    })
+    
+    table.rows().every(function() {
+    this.nodes().to$().removeClass('selected')
+    });
+
+	//data-3
+    var table = $('#data-3').DataTable({
+        createdRow: function ( row, data, index ) {
+           $(row).addClass('selected')
+        } ,
+		language: {
+			paginate: {
+			  next: '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',
+			  previous: '<i class="fa fa-angle-double-left" aria-hidden="true"></i>' 
+			}
+		  }
+    });
+      
+    table.on('click', 'tbody tr', function() {
+    var $row = table.row(this).nodes().to$();
+    var hasClass = $row.hasClass('selected');
+    if (hasClass) {
+        $row.removeClass('selected')
+    } else {
+        $row.addClass('selected')
+    }
+    })
+    
+    table.rows().every(function() {
+    this.nodes().to$().removeClass('selected')
+    });
+
 
 
     //example 2
