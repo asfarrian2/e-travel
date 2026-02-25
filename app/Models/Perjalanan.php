@@ -21,9 +21,16 @@ class Perjalanan extends Model
                             'status',
                             ];
     
-    //Relasi ke Subkegiatan
+    //Relasi ke Anggaran
     public function anggaran()
     {
         return $this->belongsTo(Anggaran::class, 'id_anggaran', 'id_anggaran');
     }
+
+    //Relasi ke Rincian Pelaksana
+    public function pelperjadin()
+    {
+        return $this->hasMany(Pelperjadin::class, 'id_perjalanan', 'id_perjalanan');
+    }
+
 }

@@ -63,7 +63,7 @@
                     <div class="col-12 col-md-6">
                         <div class="card">
                             <div class="card-body">
-                            <form action="/perjadin" method="GET">
+                            <form action="/perjalanan/dinas" method="GET">
                              <div class="mb-3">
                                  <label class="form-label">Jenis Perjalanan :</label>
                                  <select class="input-default form-control" name="jenis" required>
@@ -152,9 +152,9 @@
                 </div>
                 <!-- End Modal Tambah Dalam Daerah -->
 
-                <!-- Start EditModal -->
+                            <!-- Start EditModal -->
                             <div class="modal fade" id="modal-editobjek">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title">Edit Data</h3>
@@ -171,9 +171,28 @@
                                 </div>
                             </div>
                             <!-- End Modal -->
+                            <!-- Start EditModal -->
+                            <div class="modal fade" id="modal-kirim">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title">Dasar Anggaran Kegiatan</h3>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="loadkirim">
+                                            <div class="basic-form">
+                                            <!-- Form
+                                                        Edit -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Modal -->
                             <!-- Start +PegawaiModal -->
                             <div class="modal fade" id="modal-addpegawai">
-                                <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-dialog modal-md">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title">Tambah Pegawai</h3>
@@ -192,7 +211,7 @@
                             <!-- End +PegawaiModal -->
                             <!-- Start List PegawaiModal -->
                             <div class="modal fade" id="modal-listpegawai">
-                                <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title">List Pegawai</h3>
@@ -234,13 +253,147 @@
     });
     </script>
 
-    <!-- Button Edit SPJ -->
+    <!-- Button Edit Perjadin -->
+    <script>
+    $(document).on('click', '.kirim', function(){
+    var id_perjalanan = $(this).attr('data-id');
+    $.ajax({
+        type: 'POST',
+        url: '/perjalanan/dinas/kirim',
+        cache: false,
+        data: {
+            _token: "{{ csrf_token() }}",
+            id_perjalanan: id_perjalanan
+        },
+        success: function(respond) {
+            $("#loadkirim").html(respond);
+            $(document).on('change', '#ksubkegiatan', function () {
+
+            let id_sub = $(this).val();
+
+            $('#kkoderekening').html('<option value="">Loading...</option>');
+
+            if (id_sub !== '') {
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('get.koderekening') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id_subkegiatan: id_sub
+                    },
+                    success: function (response) {
+
+                        let html = '<option value="">Pilih Kode Rekening</option>';
+
+                        $.each(response, function (key, item) {
+                            html += `<option value="${item.rekening.id_rekening}">
+                                        ${item.rekening.kd_rekening} - ${item.rekening.nm_rekening}
+                                     </option>`;
+                        });
+
+                        $('#kkoderekening').html(html).trigger('change');
+                    }
+                });
+
+            } else {
+                $('#kkoderekening').html('<option value="">Pilih Kode Rekening</option>');
+            }
+
+        });
+        $(document).on('change', '#kkoderekening', function () {
+
+        let id_sub = $('#ksubkegiatan').val();
+        let id_rek = $(this).val();
+
+        $('#kanggaran').html('<option value="">Loading...</option>');
+
+        if (!id_rek) {
+            $('#kanggaran').html('<option value="">Pilih Anggaran</option>');
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('get.anggaranperjalanan') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id_subkegiatan: id_sub,
+                id_rekening: id_rek
+            },
+            success: function (response) {
+
+                let grouped = {};
+
+                $.each(response, function (key, item) {
+
+                    if (!grouped[item.nm_anggaran]) {
+                        grouped[item.nm_anggaran] = [];
+                    }
+
+                    grouped[item.nm_anggaran].push(item);
+
+                });
+
+                let html = '<option value="">Pilih Anggaran</option>';
+
+                $.each(grouped, function (namaAnggaran, items) {
+
+                    html += `<optgroup label="${namaAnggaran}">`;
+
+                    $.each(items, function (i, item) {
+
+                        html += `<option value="${item.id_anggaran}">
+                                    ${item.sub_anggaran}
+                                 </option>`;
+
+                    });
+
+                    html += `</optgroup>`;
+                });
+
+            $('#kanggaran')
+                .html(html)
+                .trigger('change');
+        }
+    });
+
+});
+        }
+    });
+    $("#modal-kirim").modal("show");
+    });
+    </script>
+    <!-- END Button Edit Perjadin -->
+
+    <!-- Button Status -->
+    <script>
+    $(document).on('click', '.batal', function(){
+        var id_perjalanan = $(this).attr('data-id');
+    Swal.fire({
+      title: "Apakah Anda Yakin Ingin Membatalkan Data Ini ?",
+      text: "Jika Ya Maka Status Data Akan Diubah",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Batalkan !"
+      }).then((result) => {
+      if (result.isConfirmed) {
+        window.location = "/perjalanan/dinas/batal/"+id_perjalanan
+        }
+      });
+    });
+    </script>
+    <!-- END Button Status -->
+
+    <!-- Button Edit Perjadin -->
     <script>
     $(document).on('click', '.edit', function(){
     var id_perjalanan = $(this).attr('data-id');
     $.ajax({
         type: 'POST',
-        url: '/perjadin/edit',
+        url: '/perjalanan/dinas/edit',
         cache: false,
         data: {
             _token: "{{ csrf_token() }}",
@@ -253,7 +406,7 @@
     $("#modal-editobjek").modal("show");
     });
     </script>
-    <!-- END Button Edit SPJ -->
+    <!-- END Button Edit Perjadin -->
 
     <!-- Start Button Hapus -->
     <script>
@@ -308,7 +461,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/admin/perjadin/pegawai/addpegawai',
+            url: '/perjalanan/dinas/addpegawai',
             cache: false,
             data: {
                 _token: "{{ csrf_token() }}",
@@ -335,7 +488,7 @@
         Swal.fire({
             icon: 'warning',
             title: 'Perhatian',
-            text: 'Pilih minimal satu pegawai'
+            text: 'Pilih Minimal Satu Pegawai'
         });
         return;
     }
@@ -386,7 +539,7 @@ $(document).on('click', '.listpegawai', function () {
 
     $.ajax({
         type: 'POST',
-        url: '/admin/perjadin/pegawai/listpegawai',
+        url: '/perjalanan/dinas/listpegawai',
         data: {
             _token: "{{ csrf_token() }}",
             id_perjalanan: id_perjalanan
@@ -432,7 +585,7 @@ $(document).on('click', '#hapus-terpilih', function () {
         if (result.isConfirmed) {
             $.ajax({
                 type: 'POST',
-                url: '/perjadin/hapus-pegawai',
+                url: '/hapusperjadin-pegawai',
                 data: {
                     _token: '{{ csrf_token() }}',
                     id: ids

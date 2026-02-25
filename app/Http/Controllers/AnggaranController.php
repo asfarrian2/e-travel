@@ -43,46 +43,6 @@ class AnggaranController extends Controller
         return view('pptk.anggaran.view', compact('anggaran', 'koderekening', 'subkegiatan'));
     }
 
-    public function getAnggaran(Request $request)
-    {
-        $search = $request->q;
-
-        $data = Anggaran::where('nm_anggaran', 'like', "%$search%")
-            ->select('nm_anggaran')
-            ->distinct()
-            ->limit(10)
-            ->get();
-
-        return response()->json(
-            $data->map(function ($item) {
-                return [
-                    'id' => $item->nm_anggaran,
-                    'text' => $item->nm_anggaran
-                ];
-            })
-        );
-    }
-
-    public function getSubAnggaran(Request $request)
-    {
-        $search = $request->q;
-
-        $data = Anggaran::where('sub_anggaran', 'like', "%$search%")
-            ->select('sub_anggaran')
-            ->distinct()
-            ->limit(10)
-            ->get();
-
-        return response()->json(
-            $data->map(function ($item) {
-                return [
-                    'id' => $item->sub_anggaran,
-                    'text' => $item->sub_anggaran
-                ];
-            })
-        );
-    }
-
     public function store(Request $request){
 
         $id_user      = Auth::user()->id;

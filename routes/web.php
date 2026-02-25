@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KoderekeningController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PerjadinController;
+use App\Http\Controllers\ProsesAjaxController;
 use App\Http\Controllers\RincanggaranController;
 use App\Http\Controllers\SubkegiatanController;
 use App\Http\Controllers\TahunController;
@@ -77,14 +78,23 @@ Route::post('/rinciananggaran/edit', [RincanggaranController::class, 'edit']);
 Route::post('/rinciananggaran/update', [RincanggaranController::class, 'update'])->name('u.rincanggaran');
 Route::get('/rinciananggaran/hapus/{id_rincanggaran}', [RincanggaranController::class, 'hapus']);
 //--PPTK-Perjadin--
-Route::get('/perjadin', [PerjadinController::class, 'viewd']);
-Route::post('/perjadin/store', [PerjadinController::class, 'store'])->name('a.perjadin');
-Route::post('/perjadin/edit', [PerjadinController::class, 'edit']);
-Route::post('/perjadin/update', [PerjadinController::class, 'update'])->name('u.perjadin');
-Route::get('/perjadin/hapus/{id_anggaran}', [PerjadinController::class, 'hapus']);
+Route::get('/perjalanan/dinas', [PerjadinController::class, 'viewd']);
+Route::post('/perjalanan/dinas/store', [PerjadinController::class, 'store'])->name('a.perjadin');
+Route::post('/perjalanan/dinas/edit', [PerjadinController::class, 'edit']);
+Route::post('/perjalanan/dinas/update', [PerjadinController::class, 'update'])->name('u.perjadin');
+Route::get('/perjalanan/dinas/hapus/{id_anggaran}', [PerjadinController::class, 'hapus']);
+Route::post('/perjalanan/dinas/addpegawai', [PerjadinController::class, 'add_pegawai']);
+Route::post('/perjalanan/dinas/listpegawai', [PerjadinController::class, 'list_pegawai']);
+Route::post('/perjalanan/dinas/kirim', [PerjadinController::class, 'kirim']);
+Route::post('/perjalanan/dinas/submit', [PerjadinController::class, 'submit'])->name('u.submit');
+Route::get('/perjalanan/dinas/batal/{id_perjalanan}', [PerjadinController::class, 'batal']);
 
 });
 
 //(--------AJAX---------)//
-Route::get('/get-anggaran', [AnggaranController::class, 'getAnggaran'])->name('get.anggaran');
-Route::get('/get-subanggaran', [AnggaranController::class, 'getSubAnggaran'])->name('get.subanggaran');
+Route::get('/get-anggaran', [ProsesAjaxController::class, 'getAnggaran'])->name('get.anggaran');
+Route::get('/get-subanggaran', [ProsesAjaxController::class, 'getSubAnggaran'])->name('get.subanggaran');
+Route::post('/simpanperjadin-pegawai', [PerjadinController::class, 'simpanPegawai']);
+Route::post('/hapusperjadin-pegawai', [PerjadinController::class, 'hapusPegawai']);
+Route::post('/get-koderekening', [ProsesAjaxController::class, 'getPerjKodeRekening'])->name('get.koderekening');
+Route::post('/get-anggaranperjalanan', [ProsesAjaxController::class, 'getPerjAnggaran'])->name('get.anggaranperjalanan');

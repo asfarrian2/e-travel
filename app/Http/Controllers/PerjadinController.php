@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Anggaran;
+use App\Models\Pelaksana;
+use App\Models\Pelperjadin;
 use App\Models\Perjalanan;
 use App\Models\Tahun;
 
@@ -97,7 +99,243 @@ class PerjadinController extends Controller
 
     public function edit(Request $request){
 
-        return view('pptk.perjadin.edit');
+        $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
+
+        $perjalanan = Perjalanan::where('id_perjalanan', $id_perjalanan)->first();
+
+        return view('pptk.perjadin.edit', compact('perjalanan'));
     }
+
+    public function update(Request $request){
+
+        $id_perjalanan= Crypt::decrypt($request->id);
+        $dasar        = $request->dasar;
+        $keperluan    = $request->keperluan;
+        $tujuan       = $request->tujuan;
+        $tgl_berangkat= $request->tgl_berangkat;
+        $tgl_pulang   = $request->tgl_pulang;
+        $angkutan     = $request->angkutan;
+
+        $data       = [
+            'dasar'        => $dasar,
+            'keperluan'    => $keperluan,
+            'tujuan'       => $tujuan,
+            'tgl_berangkat'=> $tgl_berangkat,
+            'tgl_pulang'   => $tgl_pulang,
+            'angkutan'     => $angkutan,
+        ];
+
+        $update = Perjalanan::where('id_perjalanan', $id_perjalanan)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Diubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Diubah']);
+        }
+        
+    }
+
+    public function kirim(Request $request){
+
+        $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
+
+        $perjalanan = Perjalanan::where('id_perjalanan', $id_perjalanan)->first();
+
+        $subkegiatan = Anggaran::where('id_user', Auth::user()->id)
+                ->where('id_tahun', Auth::user()->id_tahun)
+                ->get()
+                ->unique('subkegiatan')
+                ->values();
+
+        return view('pptk.perjadin.kirim', compact('perjalanan', 'subkegiatan'));
+    }
+
+    public function submit(Request $request){
+
+        $id_perjalanan = Crypt::decrypt($request->id);
+        $anggaran = $request->anggaran;
+
+        $data       = [
+            'status'        => '2',
+            'id_anggaran'   => $anggaran
+        ];
+
+        $update = Perjalanan::where('id_perjalanan', $id_perjalanan)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Diubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Diubah']);
+        }
+        
+    }
+
+    public function batal(Request $request){
+
+        $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
+
+        $data       = [
+            'status'        => '1',
+            'id_anggaran'   => ''
+        ];
+
+        $update = Perjalanan::where('id_perjalanan', $id_perjalanan)->update($data);
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Diubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Diubah']);
+        }
+        
+    }
+
+
+
+
+    // ***********************************
+    // Proses Simpan Pelaksana / Pegawai 
+    // ***********************************
+    public function add_pegawai(Request $request){
+        
+        $id_perjalanan   = Crypt::decrypt($request->id_perjalanan);
+
+        $pegawai = Pelaksana::where('status', '1')->where('jenis', '1')
+        ->whereNotIn('id_pelaksana', function($query) use ($id_perjalanan) {
+            $query->select('id_pelaksana')
+                ->from('tb_pelperjadin')
+                ->where('id_perjalanan', $id_perjalanan);
+        })
+        ->orderby('kelas', 'asc')->get();
+
+        return view('pptk.perjadin.addpegawai', compact('pegawai'));
+    }
+
+    public function simpanPegawai(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+    
+            // =====================
+            // Ambil & decrypt data
+            // =====================
+            $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
+            $pegawai_id    = $request->pegawai_id;
+            $id_tahun      = Auth::user()->id_tahun;
+            $tahun         = Tahun::where('id_tahun', $id_tahun)->first();
+    
+            // =====================
+            // Prefix kode
+            // =====================
+            $prefix = 'pp-'.$tahun->tahun;
+    
+            // =====================
+            // Ambil ID terakhir DENGAN LOCK
+            // =====================
+            $lastId = Pelperjadin::where('id_pelperjadin', 'like', $prefix . '%')
+                ->orderBy('id_pelperjadin', 'desc')
+                ->lockForUpdate()
+                ->value('id_pelperjadin');
+    
+            // =====================
+            // Tentukan nomor urut
+            // =====================
+            if ($lastId) {
+                $nomorurut = (int) substr($lastId, -8) + 1;
+            } else {
+                $nomorurut = 1;
+            }
+    
+            // =====================
+            // Simpan data pegawai
+            // =====================
+            foreach ($pegawai_id as $id_pelaksana) {
+    
+                $kode = $prefix . str_pad($nomorurut, 8, '0', STR_PAD_LEFT);
+    
+                Pelperjadin::create([
+                    'id_pelperjadin' => $kode,
+                    'id_perjalanan'  => $id_perjalanan,
+                    'id_pelaksana'   => Crypt::decrypt($id_pelaksana),
+                ]);
+    
+                $nomorurut++;
+            }
+    
+            DB::commit();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Data pegawai berhasil disimpan'
+            ]);
+    
+        } catch (\Exception $e) {
+    
+            DB::rollBack();
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan data',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function list_pegawai(Request $request){
+
+        $id_perjalanan   = $request->id_perjalanan;
+        $id_perjalanan   = Crypt::decrypt($id_perjalanan);
+
+        $perjalanan      = Perjalanan::where('id_perjalanan', $id_perjalanan)->first();
+
+        $status        = $perjalanan->status;
+
+        $pelperjadin     = Pelperjadin::where('id_perjalanan', $id_perjalanan)
+                         ->orderBy(
+                            Pelaksana::select('kelas')
+                                ->whereColumn('tb_pelaksana.id_pelaksana', 'tb_pelperjadin.id_pelaksana')
+                            )
+                        ->get();
+
+        $pegawai       = Pelaksana::all();
+
+        return view('pptk.perjadin.listpegawai', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
+        
+    }
+
+    public function hapusPegawai(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if (!$request->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada data yang dipilih'
+                ]);
+            }
+
+            foreach ($request->id as $encryptedId) {
+                $id = Crypt::decrypt($encryptedId);
+
+                Pelperjadin::where('id_pelperjadin', $id)->delete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+
+
 
 }

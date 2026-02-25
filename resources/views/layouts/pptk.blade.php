@@ -15,7 +15,7 @@
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
-	<title>E-Travel BPKUk</title>
+	<title>E-Travel BPKUK</title>
 
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/profile/Default Picture Profile.png') }}" />
@@ -122,13 +122,13 @@
 							<span class="nav-text">Anggaran</span>
 						</a>
                     </li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"  @if(Request::is('/perjadin*')) style="background-color: #eefaf9;" @endif>
-							<i class="flaticon-381-location-3" @if(Request::is('perjadin*')) style="color: #5bcfc5;" @endif></i>
-							<span class="nav-text">Perjalanan Dinas</span>
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false"  @if(Request::is('/perjalanan*')) style="background-color: #eefaf9;" @endif>
+							<i class="flaticon-381-location-3" @if(Request::is('perjalanan*')) style="color: #5bcfc5;" @endif></i>
+							<span class="nav-text">Perjalanan</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li @if(Request::is('perjadin/dalamdaerah*')) class="mm-active" @endif><a href="/perjadin/dalamdaerah" @if(Request::is('perjadin/dalamdaerah*')) class="mm-active" @endif>Dalam Daerah</a></li>
-                            <li @if(Request::is('perjadin/luardaerah*')) class="mm-active" @endif><a href="/perjadin/luardaerah" @if(Request::is('perjadin/luardaerah*')) class="mm-active" @endif>Luar Daerah</a></li>
+                            <li @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif><a href="/perjalanan/dinas" @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif>Dinas</a></li>
+                            <li @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif><a href="/perjalanan/luardaerah" @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif>Luar Daerah</a></li>
                         </ul>
                     </li>
                     <div class="copyright">
