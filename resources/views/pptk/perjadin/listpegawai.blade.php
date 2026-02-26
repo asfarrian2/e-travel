@@ -3,6 +3,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th style="text-align:center;">NO.</th>
                 <th style="text-align:center; font-size:16px; width:50%;">NAMA / NIP <br>PANGKAT / GOL</th>
                 <th style="text-align:center; font-size:16px; width:45%;">JABATAN</th>
                 <th style="text-align:center; font-size:16px; width:5%;"></th>
@@ -11,6 +12,7 @@
         <tbody>
             @foreach ($pelperjadin as $d )
             <tr>
+            <td style="color: black; font-size:12px">{{ $loop->iteration }}</td>
             <td style="color: black; font-size:12px"><b>{{ $d->pelaksana->nama }}</b><br>{{ $d->pelaksana->nip}}</td>
             <td style="color: black; font-size:12px">{{ $d->pelaksana->jabatan }}</td>
             <td>
@@ -27,6 +29,7 @@
                 <th style="text-align:center;">NO.</th>
                 <th style="text-align:center;">NAMA / NIP <br>PANGKAT / GOL</th>
                 <th style="text-align:center;">JABATAN</th>
+                <th style="text-align:center; font-size:16px; width:5%;"></th>
             </tr>
         </tfoot>
     </table>

@@ -23,6 +23,14 @@
                  <label class="form-label">Password :</label>
                  <input type="text" name="password" class="form-control input-default">
              </div>
+             <div class="mb-3">
+                <label class="form-label">Profile :</label>
+                <select class="input-default form-control" name="profile" required>
+                    <option value="">-Pilih Tujuan-</option>
+                    <option value="1" {{ $user->profile == '1' ? 'selected' : '' }}>Laki-Laki</option>
+                    <option value="0" {{ $user->profile == '0' ? 'selected' : '' }}>Perempuan</option>
+                </select>
+            </div>
         </div>
      </div>
      <div class="modal-footer">

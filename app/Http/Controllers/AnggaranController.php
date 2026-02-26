@@ -15,6 +15,7 @@ use App\Models\Anggaran;
 use App\Models\Subkegiatan;
 use App\Models\Koderekening;
 use App\Models\RincAnggaran;
+use App\Models\Tahun;
 
 class AnggaranController extends Controller
 {
@@ -38,9 +39,16 @@ class AnggaranController extends Controller
                             'nm_anggaran',
                             'sub_anggaran'
                         ]);
+        
+        $totalAnggaran = Anggaran::where('id_user', $id_user)
+                         ->where('id_tahun', $id_tahun)
+                         ->withSum('rincian as total', DB::raw('harga * volume'))
+                         ->get()
+                         ->sum('total');
 
+        $tahun         = Tahun::where('id_tahun', $id_tahun)->first();
 
-        return view('pptk.anggaran.view', compact('anggaran', 'koderekening', 'subkegiatan'));
+        return view('pptk.anggaran.view', compact('anggaran', 'koderekening', 'subkegiatan', 'totalAnggaran', 'tahun'));
     }
 
     public function store(Request $request){

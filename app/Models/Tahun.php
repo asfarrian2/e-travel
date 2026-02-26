@@ -8,6 +8,6 @@ use App\Models\Dpa;
 class Tahun extends Model
 {
     protected $table='tb_tahun';
-    protected $fillable = ['id_tahun', 'tahun', 'status'];
+    protected $fillable = ['id_tahun', 'tahun', 'status', 'dpa', 'tgl_dpa'];
     
 }

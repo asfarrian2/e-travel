@@ -10,9 +10,10 @@ class RincAnggaran extends Model
     protected $fillable = ['id_rincanggaran', 'id_anggaran', 'jenis', 'kegunaan', 'uraian', 'spesifikasi', 'harga', 'volume', 'satuan'];
 
      //Relasi ke Anggaran
-    public function subkegiatan()
+    public function anggaran()
     {
         return $this->belongsTo(Anggaran::class, 'id_anggaran', 'id_anggaran');
     }
+    
     
 }

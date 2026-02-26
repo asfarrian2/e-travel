@@ -18,7 +18,7 @@ class UserController extends Controller
 {
     public function view(){
 
-        $users   = User::all();
+        $users   = User::whereHas('pegawai')->orderBy('role', 'ASC')->get();
         $pegawai = Pelaksana::where('status', '1')->where('jenis', '1')->orderby('kelas', 'ASC')->get();
 
         return view('admin.users.view', compact('users', 'pegawai'));
@@ -43,6 +43,7 @@ class UserController extends Controller
         $pegawai  = crypt::decrypt($pegawai);
         $nickname = $request->nickname;
         $email    = $request->email;
+        $profile  = $request->profile;   
         $password = $request->password;
         $role     = $request->role;
 
@@ -51,6 +52,7 @@ class UserController extends Controller
             'id_pelaksana' => $pegawai,
             'nickname'   => $nickname,
             'email'      => $email,
+            'profile'    => $profile,
             'password'   => Hash::make($password),
             'role'       => $role
         ];
@@ -81,6 +83,7 @@ class UserController extends Controller
         $pegawai  = Crypt::decrypt($pegawai);
         $nickname = $request->nickname;
         $email    = $request->email;
+        $profile  = $request->profile;        
 
         if ($request->password) {
         $data       = [
@@ -88,12 +91,14 @@ class UserController extends Controller
             'nickname'   => $nickname,
             'email'      => $email,
             'password'   => $request->password,
+            'profile'    => $profile,
         ];
         }else{
              $data       = [
             'id_pelaksana'    => $pegawai,
             'nickname'   => $nickname,
             'email'      => $email,
+            'profile'    => $profile,
         ];
         }
 

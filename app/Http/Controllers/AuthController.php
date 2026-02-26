@@ -27,8 +27,8 @@ class AuthController extends Controller
     if (Auth::attempt($credentials)) {
         $redirectUrls = [
             'admin' => '/admin/dashboard',
-            'kpa' => '/pa-dashboard',
-            'bpp' => '/bp-dashboard',
+            'kpa' => '/kpa/dashboard',
+            'bpp' => '/bpp/dashboard',
             'pptk' => '/dashboard',
         ];
 

@@ -64,8 +64,8 @@
         ***********************************-->
         <div class="nav-header">
             <a href="/dashboard" class="brand-logo">
-                <img src="{{asset ('assets/images/logo-utama.png') }}" width="80px">
-                <img src="{{asset ('assets/images/logo-text-3.png') }}" class="brand-title" width="90px">
+                <img src="{{asset ('assets/images/logo-kalsel.png') }}" height="60px">
+                <img src="{{asset ('assets/images/logo-text-3.png') }}" class="brand-title">
             </a>
             <div class="nav-control">
                 <div class="hamburger">
@@ -87,7 +87,11 @@
 				<ul class="metismenu" id="menu">
 					<li class="dropdown header-profile">
 						<a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
-							<img src="{{ asset('assets/images/profile/avatar.png') }}" width="20" alt=""/>
+                            @if (Auth::user()->profile == 0)
+                            <img src="{{ asset('assets/images/profile/profil-cewe.png') }}" width="20" alt=""/>
+                            @else
+							<img src="{{ asset('assets/images/profile/profil-cowo.png') }}" width="20" alt=""/>
+                            @endif
 							<div class="header-info ms-3">
 								<span class="font-w600 ">{{ Auth::user()->nickname; }}</span>
 								<small class="text-start font-w400">{{ Auth::user()->role; }}</small>
@@ -127,8 +131,8 @@
 							<span class="nav-text">Perjalanan</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif><a href="/perjalanan/dinas" @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif>Dinas</a></li>
-                            <li @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif><a href="/perjalanan/luardaerah" @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif>Luar Daerah</a></li>
+                            <li @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif><a href="/perjalanan/dinas" @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif>SPT / SPPD</a></li>
+                            <li @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif><a href="/perjalanan/luardaerah" @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif>Realisasi</a></li>
                         </ul>
                     </li>
                     <div class="copyright">

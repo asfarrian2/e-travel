@@ -3,18 +3,20 @@
         <table id="data-2" class="display" style="min-width: 1200px">
             <thead>
                 <tr>
-                    <th style="text-align:center;">NO.</th>
-                    <th style="text-align:center; width: 250px">DASAR</th>
+                    <th style="text-align:center; width: 10px">NO.</th>
+                    <th style="text-align:center; width: 120px">PPTK</th>
+                    <th style="text-align:center; width: 120px">DASAR</th>
                     <th style="text-align:center; width: 300px">KEPERLUAN / PERIODE / TUJUAN</th>
-                    <th style="text-align:center; width: 300px">PELAKSANA</th>
-                    <th style="text-align:center;">STATUS</th>
-                    <th style="text-align:center;">AKSI</th>
+                    <th style="text-align:center; width: 120px">PELAKSANA</th>
+                    <th style="text-align:center; width: 10px">STATUS</th>
+                    <th style="text-align:center; width: 5px">AKSI</th>
                 </tr>
             </thead>
             <tbody>
             @foreach ($disetujui as $d)
                 <tr>
                     <td style="color: black; text-align:center;">NPJ/{{ substr($d->id_perjalanan, -4) }}/{{ $ytahun }}</td>
+                    <td style="color: black;">{{ $d->pptk->pegawai->nama}}</td>
                     <td style="color: black;"><div class="bootstrap-popover d-inline-block">
                         <a type="button" data-bs-container="body" data-bs-toggle="popover"
                             data-bs-placement="right" data-bs-content="{{ $d->dasar }}" title="Dasar Pelaksanaan">
@@ -34,21 +36,25 @@
                             <div style="font-size: 12px">(-Empty)</div>
                         @endif
                     </td>
-                    <td style="color: black;">{{$d->keperluan}}<br><br><div style="font-size: 12px">Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_pulang)->diffInDays(\Carbon\Carbon::parse($d->tgl_berangkat)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</div></td>
+                    <td style="color: black;">{{$d->keperluan}}<br>Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_pulang)->diffInDays(\Carbon\Carbon::parse($d->tgl_berangkat)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</td>
                     <td style="color: black;">
                         @if ($d->pelperjadin->isEmpty())
                             <div style="color: red">Data Tidak Ada</div>
                         @else
-                         @foreach ($d->pelperjadin->take(3) as $index => $r )
-                             <p style="color: rgb(11, 85, 57);" class="mb-0">{{ $r->pelaksana->nama }}</p>@if ($index < 2 && $d->pelperjadin->count() > 3)@endif
-                         @endforeach
-                         @if ($d->pelperjadin->count() > 3)
-                             Dll...
-                         @endif 
+                            @foreach ($d->pelperjadin->take(3) as $index => $r )
+                                <p style="color: rgb(11, 85, 57);" class="mb-0">{{ $r->pelaksana->nama }}</p>@if ($index < 2 && $d->pelperjadin->count() > 3)@endif
+                            @endforeach
+                            @if ($d->pelperjadin->count() > 3)
+                                Dll...
+                            @endif 
                         <a type="button" class="listpegawai" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-list color-muted"></i> Selengkapnya..</a>
                         @endif
                     </td>
-                    <td style="text-align:center;"><span class="badge light badge-success">Sudah Diverifikasi</span></td>
+                    @if ($d->status == '3')
+                        <td style="text-align:center;"><span class="badge light badge-success">Sudah Diverifikasi</span></td>
+                        @else
+                        <td style="text-align:center;"><span class="badge light badge-secondary">Terkirim</span></td>
+                    @endif
                     <td>
                         <div class="dropdown">
 							<button type="button" class="btn btn-primary light sharp" data-bs-toggle="dropdown">
@@ -56,9 +62,8 @@
 							</button>
                             @csrf
 							<div class="dropdown-menu">
-                                <a type="button" href="/perjalanan/dinas/spt/{{Crypt::encrypt($d->id_perjalanan)}}" class="dropdown-item" target="_BLANK"> <i class="fa fa-print color-muted"></i> SPT</a>
-                                <a type="button" href="/perjalanan/dinas/spd/{{Crypt::encrypt($d->id_perjalanan)}}" class="dropdown-item" target="_BLANK"> <i class="fa fa-print color-muted"></i> SPD</a>
-                            </div>
+                                <a type="button" href="/admin/perjadin/pegawai/spt/{{Crypt::encrypt($d->id_perjalanan)}}" class="dropdown-item" target="_BLANK"> <i class="fa fa-print color-muted"></i> SPT</a>
+							</div>
 						</div>
                     </td>
                 @endforeach
@@ -67,6 +72,7 @@
             <tfoot>
                 <tr>
                     <th style="text-align:center;">NO.</th>
+                    <th style="text-align:center; width: 120px">PPTK</th>
                     <th style="text-align:center;">DASAR</th>
                     <th style="text-align:center;">KEPERLUAN / PERIODE / TUJUAN</th>
                     <th style="text-align:center;">PEGAWAI</th>
@@ -77,4 +83,4 @@
         </table>
     </div>    
 </div>
-@include('pptk.perjadin.data0')
+@include('kpa.perjadin.data0')

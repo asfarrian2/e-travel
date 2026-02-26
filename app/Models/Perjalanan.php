@@ -21,6 +21,12 @@ class Perjalanan extends Model
                             'status',
                             ];
     
+    //Relasi ke User
+    public function pptk()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
+    }
+    
     //Relasi ke Anggaran
     public function anggaran()
     {

@@ -78,16 +78,32 @@ Route::post('/rinciananggaran/edit', [RincanggaranController::class, 'edit']);
 Route::post('/rinciananggaran/update', [RincanggaranController::class, 'update'])->name('u.rincanggaran');
 Route::get('/rinciananggaran/hapus/{id_rincanggaran}', [RincanggaranController::class, 'hapus']);
 //--PPTK-Perjadin--
-Route::get('/perjalanan/dinas', [PerjadinController::class, 'viewd']);
+Route::get('/perjalanan/dinas', [PerjadinController::class, 'pptk_view']);
 Route::post('/perjalanan/dinas/store', [PerjadinController::class, 'store'])->name('a.perjadin');
 Route::post('/perjalanan/dinas/edit', [PerjadinController::class, 'edit']);
 Route::post('/perjalanan/dinas/update', [PerjadinController::class, 'update'])->name('u.perjadin');
-Route::get('/perjalanan/dinas/hapus/{id_anggaran}', [PerjadinController::class, 'hapus']);
+Route::get('/perjalanan/dinas/hapus/{id_perjalanan}', [PerjadinController::class, 'hapus']);
 Route::post('/perjalanan/dinas/addpegawai', [PerjadinController::class, 'add_pegawai']);
 Route::post('/perjalanan/dinas/listpegawai', [PerjadinController::class, 'list_pegawai']);
 Route::post('/perjalanan/dinas/kirim', [PerjadinController::class, 'kirim']);
 Route::post('/perjalanan/dinas/submit', [PerjadinController::class, 'submit'])->name('u.submit');
 Route::get('/perjalanan/dinas/batal/{id_perjalanan}', [PerjadinController::class, 'batal']);
+Route::get('/perjalanan/dinas/spt/{id_perjalanan}', [PerjadinController::class, 'laporanSpt']);
+Route::get('/perjalanan/dinas/spd/{id_perjalanan}', [PerjadinController::class, 'laporanSpd']);
+
+
+});
+
+//--*KPA--
+Route::group(['middleware' => ['auth', 'role:kpa']], function () {
+//--KPA-Dashboard--
+Route::get('/kpa/dashboard', [DashboardController::class, 'kpa_view']);
+//--KPA-Perjadin--
+Route::get('/kpa/perjalanan/dinas', [PerjadinController::class, 'kpa_view']);
+Route::post('/kpa/perjalanan/dinas/listpegawai', [PerjadinController::class, 'list_pegawai']);
+Route::get('/kpa/perjalanan/dinas/batal/{id_perjalanan}', [PerjadinController::class, 'batal']);
+Route::get('/kpa/perjalanan/dinas/setuju/{id_perjalanan}', [PerjadinController::class, 'setuju']);
+
 
 });
 

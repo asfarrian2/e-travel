@@ -25,6 +25,8 @@ class User extends Authenticatable
         'nickname',
         'role',
         'id_tahun',
+        'jdwl_tahun',
+        'profile',
         'email',
         'password',
     ];

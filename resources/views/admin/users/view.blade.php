@@ -107,6 +107,14 @@
                                                     <input type="text" name="password" class="form-control input-default" required>
                                                 </div>
                                                 <div class="mb-3">
+                                                    <label class="form-label">Profile :</label>
+                                                    <select class="input-default form-control" name="profile" required>
+                                                        <option value="">Pilih Profile</option>
+                                                        <option value="1">Lak-Laki</option>
+                                                        <option value="0">Perempuan</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
                                                     <label class="form-label">Role :</label>
                                                     <select class="input-default form-control" name="role" required>
                                                         <option value="">Pilih Role</option>
@@ -114,7 +122,7 @@
                                                         <option value="kpa">KPA</option>
                                                         <option value="pptk">PPTK</option>
                                                         <option value="bpp">BPP</option>
-                                                </select>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -143,7 +151,7 @@
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
                                                 <td style="color: black;"><b>{{$d->pegawai->nama}}</b> / {{ $d->nickname }}<br>NIP. {{$d->pegawai->nip}}</td>
-                                                <td style="color: black; text-align:center;">{{ $d->email}}</td>
+                                                <td style="color: black;">{{ $d->email}}</td>
                                                 <td style="color: black; text-align:center;">{{ $d->role}}</td>
                                                 <td>
                                                     <div class="dropdown">
