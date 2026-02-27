@@ -5,10 +5,6 @@
                             <div class="card-header">
                                 <h4 class="card-title">Tabel Data</h4>
                                 <!-- Button trigger modal -->
-                                @if (request('jenis') == '1')
-                                <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata1">+Tambah</button>
-                                @else
-                                @endif
                             </div>
                             
                             <div class="card-body">

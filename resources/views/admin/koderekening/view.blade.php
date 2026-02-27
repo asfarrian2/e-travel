@@ -143,8 +143,8 @@
 														</div>
 													</div>
                                                 </td>
-                                            @endforeach
                                             </tr>
+                                            @endforeach
                                         </tbody>
                                         <tfoot>
                                             <tr>

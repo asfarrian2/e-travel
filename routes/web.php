@@ -66,11 +66,12 @@ Route::group(['middleware' => ['auth', 'role:pptk']], function () {
 //--PPTK-Dashboard--
 Route::get('/dashboard', [DashboardController::class, 'pptk_view']);
 //--PPTK-Anggaran--
-Route::get('/anggaran', [AnggaranController::class, 'view']);
+Route::get('/anggaran', [AnggaranController::class, 'pptk_view']);
 Route::post('/anggaran/store', [AnggaranController::class, 'store'])->name('a.anggaran');
 Route::post('/anggaran/edit', [AnggaranController::class, 'edit']);
 Route::post('/anggaran/update', [AnggaranController::class, 'update'])->name('u.anggaran');
 Route::get('/anggaran/hapus/{id_anggaran}', [AnggaranController::class, 'hapus']);
+Route::get('/anggaran/simpan/{id_anggaran}', [AnggaranController::class, 'simpan']);
 //--PPTK-Rincian Anggaran--
 Route::post('/rinciananggaran/add', [RincanggaranController::class, 'add']);
 Route::post('/rinciananggaran/store', [RincanggaranController::class, 'store'])->name('a.rincanggaran');
@@ -98,6 +99,12 @@ Route::get('/perjalanan/dinas/spd/{id_perjalanan}', [PerjadinController::class, 
 Route::group(['middleware' => ['auth', 'role:kpa']], function () {
 //--KPA-Dashboard--
 Route::get('/kpa/dashboard', [DashboardController::class, 'kpa_view']);
+//--KPA-Anggaran--
+Route::get('/kpa/anggaran', [AnggaranController::class, 'kpa_view']);
+Route::get('/kpa/anggaran/akses/{id}', [AnggaranController::class, 'akses']);
+Route::get('/kpa/anggaran/rincian/{id}', [AnggaranController::class, 'data_kpa']);
+
+
 //--KPA-Perjadin--
 Route::get('/kpa/perjalanan/dinas', [PerjadinController::class, 'kpa_view']);
 Route::post('/kpa/perjalanan/dinas/listpegawai', [PerjadinController::class, 'list_pegawai']);

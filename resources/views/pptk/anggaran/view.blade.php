@@ -78,9 +78,15 @@
                                 </div>
                                 <div class="me-3 mb-3">
                                     <p class="fs-14 mb-1">STATUS</p>
+                                    @if ($users->jdwl_anggaran == Auth::user()->id_tahun)
                                     <span class="btn btn-rounded btn-warning"><span
                                         class="btn-icon-start text-warning"><i class="fa fa-file"></i>
                                     </span>Draft</span>
+                                    @else
+                                    <span class="btn btn-rounded btn-success"><span
+                                        class="btn-icon-start text-success"><i class="fa fa-check"></i>
+                                    </span>Tersimpan</span>
+                                    @endif
                                 </div>
                                 <div class="dropdown mb-auto">
                                     <a href="javascript:void(0);" class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,7 +97,7 @@
                                         </svg>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a type="button" class="simpan dropdown-item"><i class="fa fa-send color-muted"></i> Simpan</a>
+                                        <a type="button" class="simpan dropdown-item" data-id="{{ Crypt::encrypt($users->id) }}"><i class="fa fa-send color-muted"></i> Simpan</a>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +108,10 @@
                             <div class="card-header">
                                 <h4 class="card-title">Tabel Data</h4>
                                 <!-- Button trigger modal -->
+                                @if ($users->jdwl_anggaran == Auth::user()->id_tahun)
                                 <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+Tambah</button>
+                                @else
+                                @endif
                             </div>
                             <!-- Start Modal -->
                             <div class="modal fade" id="tambahdata">
@@ -220,9 +229,11 @@
                                              <tr>
                                                 <td style="color: black; text-align:center;"></td>
                                                 <td style="color: black;" colspan="3"><b>[-] {{ $subAnggaran }}</b>
+                                                    @if ($users->jdwl_anggaran == Auth::user()->id_tahun)
                                                     &nbsp;<a type="button" class="addrinc" data-id="{{Crypt::encrypt( $firstAnggaran->id_anggaran )}}"> <i class="fa fa-plus color-muted"></i> Rincian</a>
                                                     &nbsp;<a type="button" class="edit" data-id="{{Crypt::encrypt( $firstAnggaran->id_anggaran )}}"> <i class="fa fa-edit color-muted"></i> Edit</a>
                                                     &nbsp;<a type="button" class="hapus" data-id="{{Crypt::encrypt( $firstAnggaran->id_anggaran )}}"> <i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                    @endif
                                                 </td>
                                                 <td style="color: black;"><b>Rp{{ number_format($totalSub,0,',','.') }}</b></td>
                                              </tr>
@@ -231,8 +242,10 @@
                                              <tr>
                                                 <td style="color: black; text-align:center;"></td>
                                                 <td style="color: black;">{{ $rinci->uraian }}<br>Spesifikasi: {{ $rinci->spesifikasi }}<br>
+                                                    @if ($users->jdwl_anggaran == Auth::user()->id_tahun)
                                                      &nbsp;<a type="button" class="editrinc" data-id="{{Crypt::encrypt( $rinci->id_rincanggaran )}}"> <i class="fa fa-edit color-muted"></i> Edit</a>
                                                      &nbsp;<a type="button" class="haptrinc" data-id="{{Crypt::encrypt( $rinci->id_rincanggaran )}}"> <i class="fa fa-trash color-muted"></i> Hapus</a>
+                                                     @endif
                                                     </td>
                                                 <td style="color: black;">Rp{{ number_format($rinci->harga, 0, ',', '.') }},-</td>
                                                 <td style="color: black;">{{ $rinci->volume }} {{ $rinci->satuan }}</td>
@@ -432,19 +445,19 @@ $(document).on('click', '.edit', function(){
 
 <!-- Button Status -->
 <script>
-$(document).on('click', '.status', function(){
-    var id_anggaran = $(this).attr('data-id');
+$(document).on('click', '.simpan', function(){
+    var id_user = $(this).attr('data-id');
 Swal.fire({
-  title: "Apakah Anda Yakin Ingin Mengubah Status Data Ini ?",
-  text: "Jika Ya Maka Status Data Akan Diubah",
+  title: "Apakah Anda Yakin Ingin Menyimpan Data Anggaran Ini ?",
+  text: "Jika Ya Maka Data Akan Terseimpan",
   icon: "warning",
   showCancelButton: true,
   confirmButtonColor: "#3085d6",
   cancelButtonColor: "#d33",
-  confirmButtonText: "Ya, Ubah Status!"
+  confirmButtonText: "Ya, Simpan!"
   }).then((result) => {
   if (result.isConfirmed) {
-    window.location = "/admin/kegiatan/subkegiatan/status"+id_anggaran
+    window.location = "/anggaran/simpan/"+id_user
     }
   });
 });

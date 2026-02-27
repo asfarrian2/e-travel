@@ -68,4 +68,9 @@ class User extends Authenticatable
         return $this->belongsTo(Tahun::class, 'id_tahun', 'id_tahun');
     }
 
+    public function anggaran()
+    {
+    return $this->hasMany(Anggaran::class, 'id_user', 'id');
+    }
+
 }

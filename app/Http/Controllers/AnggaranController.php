@@ -16,10 +16,12 @@ use App\Models\Subkegiatan;
 use App\Models\Koderekening;
 use App\Models\RincAnggaran;
 use App\Models\Tahun;
+use App\Models\User;
 
 class AnggaranController extends Controller
 {
-    public function view() {
+    //------------------------------AKSES PPTK------------------------------
+    public function pptk_view() {
 
         $id_user      = Auth::user()->id;
         $id_tahun     = Auth::user()->id_tahun;
@@ -41,14 +43,16 @@ class AnggaranController extends Controller
                         ]);
         
         $totalAnggaran = Anggaran::where('id_user', $id_user)
+                         ->where('id_user', $id_user)
                          ->where('id_tahun', $id_tahun)
                          ->withSum('rincian as total', DB::raw('harga * volume'))
                          ->get()
                          ->sum('total');
 
         $tahun         = Tahun::where('id_tahun', $id_tahun)->first();
+        $users         = User::where('id', $id_user)->first();
 
-        return view('pptk.anggaran.view', compact('anggaran', 'koderekening', 'subkegiatan', 'totalAnggaran', 'tahun'));
+        return view('pptk.anggaran.view', compact('anggaran', 'koderekening', 'subkegiatan', 'totalAnggaran', 'tahun', 'users'));
     }
 
     public function store(Request $request){
@@ -147,6 +151,111 @@ class AnggaranController extends Controller
             } else {
                 return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
             }
+        }
+    }
+
+    public function simpan($id_user){
+
+        $id      = Crypt::decrypt($id_user);
+        $users   = User::where('id', $id)->first();
+        $id_tahun= Auth::user()->id_tahun;
+
+        $status     = $users->jdwl_anggaran;
+
+        if($status == 0){
+            $data = [
+                'jdwl_anggaran' => $id_tahun
+            ];
+        }else{
+            $data = [
+                'jdwl_anggaran' => '0'
+            ];
+        }
+
+        $update = User::where('id',$id)->update($data);
+
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Disimpan']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Disimpan']);
+        }
+    }
+
+
+    //------------------------------AKSES KPA------------------------------
+    public function kpa_view() {
+
+        $id_tahun     = Auth::user()->id_tahun;
+        $users        = User::with(['pegawai'])->where('role', 'pptk')
+                        ->withSum(['anggaran as total_anggaran' => function ($q) use($id_tahun) {
+                             $q->where('tb_anggaran.id_tahun', $id_tahun)->join('tb_rincanggaran', 'tb_anggaran.id_anggaran', '=', 'tb_rincanggaran.id_anggaran');
+                        }], DB::raw('tb_rincanggaran.harga * tb_rincanggaran.volume'))
+                        ->get();
+
+        $tahun         = Tahun::where('id_tahun', $id_tahun)->first();
+
+        return view('kpa.anggaran.view', compact('users', 'tahun'));
+    }
+
+    public function data_kpa($id) {
+
+        $id_user      = Crypt::decrypt($id);
+        $users        = User::where('id', $id_user)->first();
+        $id_tahun     = Auth::user()->id_tahun;
+        $subkegiatan  = Subkegiatan::orderby('kd_subkegiatan', 'ASC')->get();
+        $koderekening = Koderekening::all();
+        $anggaran     = Anggaran::with([
+                            'subkegiatan',
+                            'rekening',
+                            'rincian'
+                        ])
+                        ->where('id_user', $id_user)
+                        ->where('id_tahun', $id_tahun)
+                        ->orderBy('id_subkegiatan')->orderBy('id_rekening')->orderBy('nm_anggaran')->orderBy('sub_anggaran')
+                        ->get()
+                        ->groupBy([
+                            'id_subkegiatan',
+                            'id_rekening',
+                            'nm_anggaran',
+                            'sub_anggaran'
+                        ]);
+        
+        $totalAnggaran = Anggaran::where('id_tahun', $id_tahun)
+                         ->where('id_user', $id_user)
+                         ->withSum('rincian as total', DB::raw('harga * volume'))
+                         ->get()
+                         ->sum('total');
+
+        $tahun         = Tahun::where('id_tahun', $id_tahun)->first();
+
+        return view('kpa.anggaran.detail', compact('anggaran', 'koderekening', 'subkegiatan', 'totalAnggaran', 'tahun', 'users'));
+    }
+
+
+    public function akses($id){
+
+        $id      = Crypt::decrypt($id);
+        $users   = User::where('id', $id)->first();
+        $id_tahun= Auth::user()->id_tahun;
+
+        $status     = $users->jdwl_anggaran;
+
+        if($status == 0){
+            $data = [
+                'jdwl_anggaran' => $id_tahun
+            ];
+        }else{
+            $data = [
+                'jdwl_anggaran' => '0'
+            ];
+        }
+
+        $update = User::where('id',$id)->update($data);
+
+        if ($update) {
+            return Redirect::back()->with(['success' => 'Status Data Berhasil Diubah']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Status Data Gagal Diubah']);
         }
     }
 
