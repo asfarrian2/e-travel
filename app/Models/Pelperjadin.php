@@ -7,9 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Pelperjadin extends Model
 {
     protected $table="tb_pelperjadin";
-    protected $fillable = ['id_pelperjadin',
-                            'id_perjalanan',
+    protected $primaryKey = 'id_pelperjadin';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    protected $fillable = [ 'id_perjalanan',
                             'id_pelaksana',
+                            'uang_harian',
+                            'uang_transport',
+                            'uang_penginapan',
+                            'uang_tiketb',
+                            'uang_tiketp',
                             'penginapan',
                             'maskapaib',
                             'bandarab',
@@ -20,6 +28,8 @@ class Pelperjadin extends Model
                             'no_tiketp',
                             'no_bookingp',                      
     ];
+
+    
 
     //Relasi ke Perjalanan
     public function perjalanan()

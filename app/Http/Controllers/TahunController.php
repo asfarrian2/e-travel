@@ -24,24 +24,11 @@ class TahunController extends Controller
 
     public function store(Request $request){
 
-        $id_tahun = Tahun::latest('id_tahun')->first();
-
-        $kodeobjek ="th-";
-
-        if($id_tahun == null){
-            $nomorurut = "001";
-        }else{
-            $nomorurut = substr($id_tahun->id_tahun, 3, 3) + 1;
-            $nomorurut = str_pad($nomorurut, 3, "0", STR_PAD_LEFT);
-        }
-        $id=$kodeobjek.$nomorurut;
-
         $tahun     = $request->tahun;
         $dpa       = $request->dpa;
         $tgl       = $request->tgl;
 
         $data = [
-            'id_tahun' => $id,
             'tahun'    => $tahun,
             'dpa'      => $dpa,
             'tgl_dpa'  => $tgl,

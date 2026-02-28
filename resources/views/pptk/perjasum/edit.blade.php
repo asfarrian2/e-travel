@@ -1,4 +1,4 @@
-<form action="{{ route('u.perjadin')}}" method="POST">
+<form action="{{ route('u.fasilitator')}}" method="POST">
         @csrf    
         <input type="hidden" name="id" value="{{ Crypt::encrypt($perjalanan->id_perjalanan) }}"  class="form-control input-default" required>
         
@@ -7,7 +7,7 @@
             <textarea style="height: 80px;" name="dasar" class="form-control" required>{{ $perjalanan->dasar }}</textarea>
         </div> 
         <div class="mb-3">
-            <label class="form-label">Keperluan / Perihal:</label>
+            <label class="form-label">Uraian :</label>
             <textarea style="height: 80px;" name="keperluan" class="form-control" required>{{ $perjalanan->keperluan }}</textarea>
         </div>
         <div class="mb-3">

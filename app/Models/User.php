@@ -19,8 +19,9 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $primaryKey = 'id';
+    public $incrementing = false;
     protected $fillable = [
-        'id',
         'id_pelaksana',
         'nickname',
         'role',
@@ -30,6 +31,24 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+
+            $last = self::latest('id')->first();
+
+            if (!$last) {
+                $number = 1;
+            } else {
+                $number = (int) substr($last->id, -4) + 1;
+            }
+
+            $model->id = '541' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -3,9 +3,11 @@
 use App\Http\Controllers\AnggaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FasilitatorController;
 use App\Http\Controllers\KoderekeningController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PerjadinController;
+use App\Http\Controllers\PerjasumController;
 use App\Http\Controllers\ProsesAjaxController;
 use App\Http\Controllers\RincanggaranController;
 use App\Http\Controllers\SubkegiatanController;
@@ -65,6 +67,15 @@ Route::get('/admin/kegiatan/koderekening/status{id_tahun}', [KoderekeningControl
 Route::group(['middleware' => ['auth', 'role:pptk']], function () {
 //--PPTK-Dashboard--
 Route::get('/dashboard', [DashboardController::class, 'pptk_view']);
+//--Admin-Pegawai--
+Route::get('/pelaksana/pegawai', [PegawaiController::class, 'pptk_view']);
+//--Admin-Fasilitator--
+Route::get('/pelaksana/fasilitator', [FasilitatorController::class, 'pptk_view']);
+Route::post('/pelaksana/fasilitator/store', [FasilitatorController::class, 'store'])->name('a.fasilitator');
+Route::post('/pelaksana/fasilitator/edit', [FasilitatorController::class, 'edit']);
+Route::post('/pelaksana/fasilitator/update', [FasilitatorController::class, 'update'])->name('u.fasilitator');
+Route::get('/pelaksana/fasilitator/hapus{id_tahun}', [FasilitatorController::class, 'hapus']);
+Route::get('/pelaksana/fasilitator/status{id_tahun}', [FasilitatorController::class, 'status']);
 //--PPTK-Anggaran--
 Route::get('/anggaran', [AnggaranController::class, 'pptk_view']);
 Route::post('/anggaran/store', [AnggaranController::class, 'store'])->name('a.anggaran');
@@ -91,6 +102,17 @@ Route::post('/perjalanan/dinas/submit', [PerjadinController::class, 'submit'])->
 Route::get('/perjalanan/dinas/batal/{id_perjalanan}', [PerjadinController::class, 'batal']);
 Route::get('/perjalanan/dinas/spt/{id_perjalanan}', [PerjadinController::class, 'laporanSpt']);
 Route::get('/perjalanan/dinas/spd/{id_perjalanan}', [PerjadinController::class, 'laporanSpd']);
+//--PPTK-Perjalanan Narasumber--
+Route::get('/perjalanan/fasilitator', [PerjasumController::class, 'pptk_view']);
+Route::post('/perjalanan/fasilitator/store', [PerjasumController::class, 'store'])->name('a.perjasum');
+Route::post('/perjalanan/fasilitator/edit', [PerjasumController::class, 'edit']);
+Route::post('/perjalanan/fasilitator/update', [PerjasumController::class, 'update'])->name('u.perjasum');
+Route::get('/perjalanan/fasilitator/hapus/{id_perjalanan}', [PerjasumController::class, 'hapus']);
+Route::post('/perjalanan/fasilitator/addpelaksana', [PerjasumController::class, 'add_pelaksana']);
+Route::post('/perjalanan/fasilitator/listpelaksana', [PerjasumController::class, 'list_pelaksana']);
+Route::post('/perjalanan/fasilitator/kirim', [PerjasumController::class, 'kirim']);
+Route::post('/perjalanan/fasilitator/submit', [PerjasumController::class, 'submit'])->name('s.perjasum');
+Route::get('/perjalanan/fasilitator/batal/{id_perjalanan}', [PerjasumController::class, 'batal']);
 
 
 });
@@ -103,8 +125,6 @@ Route::get('/kpa/dashboard', [DashboardController::class, 'kpa_view']);
 Route::get('/kpa/anggaran', [AnggaranController::class, 'kpa_view']);
 Route::get('/kpa/anggaran/akses/{id}', [AnggaranController::class, 'akses']);
 Route::get('/kpa/anggaran/rincian/{id}', [AnggaranController::class, 'data_kpa']);
-
-
 //--KPA-Perjadin--
 Route::get('/kpa/perjalanan/dinas', [PerjadinController::class, 'kpa_view']);
 Route::post('/kpa/perjalanan/dinas/listpegawai', [PerjadinController::class, 'list_pegawai']);
@@ -121,3 +141,4 @@ Route::post('/simpanperjadin-pegawai', [PerjadinController::class, 'simpanPegawa
 Route::post('/hapusperjadin-pegawai', [PerjadinController::class, 'hapusPegawai']);
 Route::post('/get-koderekening', [ProsesAjaxController::class, 'getPerjKodeRekening'])->name('get.koderekening');
 Route::post('/get-anggaranperjalanan', [ProsesAjaxController::class, 'getPerjAnggaran'])->name('get.anggaranperjalanan');
+Route::get('/get-tujuan', [ProsesAjaxController::class, 'getTujuan'])->name('get.tujuan');

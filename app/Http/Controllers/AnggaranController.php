@@ -59,19 +59,6 @@ class AnggaranController extends Controller
 
         $id_user      = Auth::user()->id;
         $id_tahun     = Auth::user()->id_tahun;
-
-        $id_anggaran = Anggaran::where('id_tahun', $id_tahun)->latest('id_anggaran')->first();
-
-        $kodeobjek ="ang".$id_tahun;
-
-        if($id_anggaran == null){
-            $nomorurut = "000001";
-        }else{
-            $nomorurut = substr($id_anggaran->id_anggaran, 9, 6) + 1;
-            $nomorurut = str_pad($nomorurut, 6, "0", STR_PAD_LEFT);
-        }
-        $id=$kodeobjek.$nomorurut;
-
         $subkegiatan     = $request->subkegiatan;
         $subkegiatan     = Crypt::decrypt($subkegiatan);
         $koderekening    = $request->koderekening;
@@ -80,7 +67,6 @@ class AnggaranController extends Controller
         $sub_anggaran    = $request->sub_anggaran;
 
         $data = [
-            'id_anggaran'    => $id,
             'id_subkegiatan' => $subkegiatan,
             'id_rekening'    => $koderekening,
             'nm_anggaran'    => $nm_anggaran,
@@ -157,20 +143,10 @@ class AnggaranController extends Controller
     public function simpan($id_user){
 
         $id      = Crypt::decrypt($id_user);
-        $users   = User::where('id', $id)->first();
-        $id_tahun= Auth::user()->id_tahun;
-
-        $status     = $users->jdwl_anggaran;
-
-        if($status == 0){
-            $data = [
-                'jdwl_anggaran' => $id_tahun
-            ];
-        }else{
-            $data = [
+        
+        $data = [
                 'jdwl_anggaran' => '0'
-            ];
-        }
+                ];
 
         $update = User::where('id',$id)->update($data);
 

@@ -88,6 +88,7 @@
                                     </span>Tersimpan</span>
                                     @endif
                                 </div>
+                                @if ($users->jdwl_anggaran == Auth::user()->id_tahun)
                                 <div class="dropdown mb-auto">
                                     <a href="javascript:void(0);" class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -97,9 +98,10 @@
                                         </svg>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a type="button" class="simpan dropdown-item" data-id="{{ Crypt::encrypt($users->id) }}"><i class="fa fa-send color-muted"></i> Simpan</a>
+                                        <a type="button" class="simpan dropdown-item" data-id="{{ Crypt::encrypt($users->id) }}"><i class="fa fa-save color-muted"></i> Simpan</a>
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>

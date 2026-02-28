@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Perjalanan extends Model
 {
     protected $table = 'tb_perjalanan';
-    protected $fillable = ['id_perjalanan', 
-                            'id_user',
+    protected $primaryKey = 'id_perjalanan';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $fillable = [ 'id_user',
                             'id_tahun', 
                             'dasar', 
                             'keperluan', 
@@ -20,6 +23,29 @@ class Perjalanan extends Model
                             'pengguna',
                             'status',
                             ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+
+            $id_tahun = Auth::user()->id_tahun;
+            $tahun    = Tahun::where('id_tahun', $id_tahun)->first();
+
+            $last = self::latest('id_perjalanan')
+                    ->where('id_tahun', $id_tahun)
+                    ->first();
+
+            if (!$last) {
+                $number = 1;
+            } else {
+                $number = (int) substr($last->id_perjalanan, -9) + 1;
+            }
+
+            $model->id_perjalanan = 'pt' . $tahun->tahun . str_pad($number, 9, '0', STR_PAD_LEFT);
+        });
+    }
     
     //Relasi ke User
     public function pptk()

@@ -20,8 +20,6 @@
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/profile/Default Picture Profile.png') }}" />
 
-	<link href="{{ asset('assets/vendor/jquery-nice-select/css/nice-select.css') }}" rel="stylesheet">
-	<link rel="stylesheet" href="{{ asset('assets/vendor/nouislider/nouislider.min.css') }}">
      <!-- Datatable -->
      <link href="{{ asset ('assets/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
      <!-- Sweat Alert -->
@@ -118,6 +116,19 @@
 						</a>
                     </li>
                     <div class="copyright">
+					<p><strong>Master</strong></p>
+				    </div>
+                    <li><a href="javascript:void()" class="has-arrow ai-icon" aria-expanded="false"  @if(Request::is('admin/pelaksana*')) style="background-color: #eefaf9;" @endif>
+						<i class="flaticon-381-user-8"></i>
+							<span class="nav-text">Pelaksana</span>
+						</a>
+                        <ul aria-expanded="false" @if(Request::is('pelaksana*')) class="mm-collapse mm-show" @endif>
+                            <li @if(Request::is('pelaksana/pegawai*')) class="mm-active" @endif><a href="/pelaksana/pegawai" @if(Request::is('pelaksana/pegawai*')) class="mm-active" @endif>Pegawai</a></li>
+                            <li @if(Request::is('pelaksana/fasilitator*')) class="mm-active" @endif><a href="/pelaksana/fasilitator" @if(Request::is('pelaksana/fasilitator*')) class="mm-active" @endif>Fasilitator</a></li>
+                            <li @if(Request::is('pelaksana/peserta*')) class="mm-active" @endif><a href="/pelaksana/peserta" @if(Request::is('pelaksana/peserta*')) class="mm-active" @endif>Peserta</a></li>
+                        </ul>
+                    </li>
+                    <div class="copyright">
 					<p><strong>Entry</strong></p>
 				    </div>
                     <li>
@@ -131,8 +142,9 @@
 							<span class="nav-text">Perjalanan</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif><a href="/perjalanan/dinas" @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif>SPT / SPPD</a></li>
-                            <li @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif><a href="/perjalanan/luardaerah" @if(Request::is('perjalanan/luardaerah*')) class="mm-active" @endif>Realisasi</a></li>
+                            <li @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif><a href="/perjalanan/dinas" @if(Request::is('perjalanan/dinas*')) class="mm-active" @endif>Dinas</a></li>
+                            <li @if(Request::is('perjalanan/fasilitator*')) class="mm-active" @endif><a href="/perjalanan/fasilitator" @if(Request::is('perjalanan/fasilitator*')) class="mm-active" @endif>Fasilitator</a></li>
+                            <li @if(Request::is('perjalanan/diklat*')) class="mm-active" @endif><a href="/perjalanan/diklat" @if(Request::is('perjalanan/diklat*')) class="mm-active" @endif>Peserta Diklat</a></li>
                         </ul>
                     </li>
                     <div class="copyright">

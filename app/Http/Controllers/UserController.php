@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anggaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -18,26 +19,13 @@ class UserController extends Controller
 {
     public function view(){
 
-        $users   = User::whereHas('pegawai')->orderBy('role', 'ASC')->get();
+        $users   = User::whereNot('role', 'admin')->orderBy('role', 'ASC')->get();
         $pegawai = Pelaksana::where('status', '1')->where('jenis', '1')->orderby('kelas', 'ASC')->get();
 
         return view('admin.users.view', compact('users', 'pegawai'));
     }
 
     public function store(Request $request){
-
-        $id_user = User::latest('id')->first();
-
-        $kodeobjek ="541";
-
-        if($id_user == null){
-            $nomorurut = "0001";
-        }else{
-            $nomorurut = substr($id_user->id, 3, 4) + 1;
-            $nomorurut = str_pad($nomorurut, 4, "0", STR_PAD_LEFT);
-        }
-        $id=$kodeobjek.$nomorurut;
-
 
         $pegawai  = $request->pegawai;
         $pegawai  = crypt::decrypt($pegawai);
@@ -48,7 +36,6 @@ class UserController extends Controller
         $role     = $request->role;
 
         $data = [
-            'id'         => $id,
             'id_pelaksana' => $pegawai,
             'nickname'   => $nickname,
             'email'      => $email,
@@ -107,6 +94,24 @@ class UserController extends Controller
             return Redirect::back()->with(['success' => 'Data Berhasil Diubah']);
         } else {
             return Redirect::back()->with(['warning' => 'Data Gagal Diubah']);
+        }
+        
+    }
+
+    public function hapus($id){
+        
+        $id = Crypt::decrypt($id);
+
+        $cekAnggaran = Anggaran::where('id_user', $id)->first();
+        if ($cekAnggaran) {
+              return Redirect::back()->with(['warning' => 'Tidak dapat menghapus data']);
+          } else {
+            $delete = User::where('id', $id)->delete();
+            if ($delete) {
+                return Redirect::back()->with(['success' => 'Data Berhasil Dihapus']);
+            } else {
+                return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
+            }
         }
         
     }

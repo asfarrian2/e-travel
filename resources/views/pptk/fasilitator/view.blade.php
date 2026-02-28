@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.pptk')
 
 @section('header')
 
@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Sub Kegiatan
+                                Fasilitator
                             </div>
                         </div>
                          <ul class="navbar-nav header-right">
@@ -59,8 +59,8 @@
                 <!-- End Pemberitahuan -->
 				<div class="row page-titles">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item active"><a href="/admin/dashboard">E-Travel</a></li>
-						<li class="breadcrumb-item">Sub Kegiatan</li>
+						<li class="breadcrumb-item active"><a href="/dashboard">E-Travel</a></li>
+						<li class="breadcrumb-item">Fasilitator</li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -77,22 +77,34 @@
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h3 class="modal-title">Tambah Data</h3>
+                                            <h3 class="modal-title">Tambah Fasilitator</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal">
                                             </button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="basic-form">
-                                                <form action="{{ route('a.subkegiatan')}}" method="POST">
+                                                <form action="{{ route('a.fasilitator')}}" method="POST">
                                                 @csrf
                                                 <div class="mb-3">
-                                                    <label class="form-label">Kode :</label>
-                                                    <input type="text" name="kodesubkegiatan" class="form-control input-default" required>
-                                                </div>    
+                                                    <label class="form-label">Nama :</label>
+                                                    <input type="text" name="nama" class="form-control input-default" required>
+                                                </div>
+                                                 <div class="mb-3">
+                                                    <label class="form-label">NIP :</label>
+                                                    <input type="text" name="nip" class="form-control input-default" required>
+                                                </div>
+                                                 <div class="mb-3">
+                                                    <label class="form-label">Pangkat / Golongan :</label>
+                                                    <input type="text" name="pangkgol" class="form-control input-default">
+                                                </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Sub Kegiatan :</label>
-                                                    <input type="text" name="subkegiatan" class="form-control input-default" required>
+                                                    <label class="form-label">Jabatan :</label>
+                                                    <input type="text" name="jabatan" class="form-control input-default" required>
                                                 </div> 
+                                                <div class="mb-3">
+                                                    <label class="form-label">Asal / Instansi :</label>
+                                                    <input type="text" name="alamat" class="form-control input-default" required>
+                                                </div>     
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -109,18 +121,20 @@
                                         <thead>
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">KODE</th>
-                                                <th style="text-align:center;">SUBKEGIATAN</th>
+                                                <th style="text-align:center; width:40%">NAMA / NIP <br>PANGKAT / GOL</th>
+                                                <th style="text-align:center;">JABATAN</th>
+                                                <th style="text-align:center;">ASAL / INSTANSI</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach ($subkegiatan as $d)
+                                        @foreach ($pelaksana as $d)
                                             <tr>
                                                 <td style="color: black; text-align:center;">{{ $loop->iteration }}</td>
-                                                <td style="color: black; text-align:center;">{{$d->kd_subkegiatan}}</td>
-                                                <td style="color: black;">{{$d->nm_subkegiatan}}</td>
+                                                <td style="color: black;"><b>{{ $d->nama }}</b><br>{{ $d->pangkgol}}<br>NIP. {{ $d->nip}}</td>
+                                                <td style="color: black;">{{ $d->jabatan }}</td>
+                                                <td style="color: black;">{{ $d->alamat }}</td>
                                                 @if ($d->status == '0')
                                                         <td style="text-align:center;"><span class="badge light badge-warning">Nonaktif</span></td>
                                                     @else
@@ -132,14 +146,14 @@
 															<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
 														</button>
 														<div class="dropdown-menu">
-                                                            @csrf
+															 @csrf
                                                             @if ($d->status == '1')
-                                                            <a type="button" class="dropdown-item status" data-id="{{Crypt::encrypt($d->id_subkegiatan)}}"> <i class="fa fa-toggle-on color-muted"></i> Aktif</a>
+                                                            <a type="button" class="dropdown-item status" data-id="{{Crypt::encrypt($d->id_pelaksana)}}"> <i class="fa fa-toggle-on color-muted"></i> Aktif</a>
                                                             @else
-                                                            <a type="button" class="dropdown-item status" data-id="{{Crypt::encrypt($d->id_subkegiatan)}}"> <i class="fa fa-toggle-off color-muted"></i> Nonaktif</a>
+                                                            <a type="button" class="dropdown-item status" data-id="{{Crypt::encrypt($d->id_pelaksana)}}"> <i class="fa fa-toggle-off color-muted"></i> Nonaktif</a>
                                                             @endif
-															<a type="button" class="dropdown-item edit" data-id="{{Crypt::encrypt($d->id_subkegiatan)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a type="button" class="dropdown-item hapus" data-id="{{Crypt::encrypt($d->id_subkegiatan)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+															<a type="button" class="dropdown-item edit" data-id="{{Crypt::encrypt($d->id_pelaksana)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a type="button" class="dropdown-item hapus" data-id="{{Crypt::encrypt($d->id_pelaksana)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
                                                 </td>
@@ -149,8 +163,9 @@
                                         <tfoot>
                                             <tr>
                                                 <th style="text-align:center;">NO.</th>
-                                                <th style="text-align:center;">KODE</th>
-                                                <th style="text-align:center;">SUBKEGIATAN</th>
+                                                <th style="text-align:center;">NAMA / NIP <br>PANGKAT / GOL</th>
+                                                <th style="text-align:center;">JABATAN</th>
+                                                <th style="text-align:center;">ASAL / INSTANSI</th>
                                                 <th style="text-align:center;">STATUS</th>
                                                 <th style="text-align:center;">AKSI</th>
                                             </tr>
@@ -193,72 +208,59 @@
     <script src="{{asset ('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset ('assets/js/plugins-init/datatables.init.js') }}"></script>
 
-    <!-- Button Edit SPJ -->
-    <script>
-    $(document).on('click', '.edit', function(){
-        var id_subkegiatan = $(this).attr('data-id');
-        $.ajax({
-                        type: 'POST',
-                        url: '/admin/kegiatan/subkegiatan/edit',
-                        cache: false,
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            id_subkegiatan: id_subkegiatan
-                        },
-                        success: function(respond) {
-                            $("#loadeditform").html(respond);
-                        }
-                    });
-         $("#modal-editobjek").modal("show");
-
-    });
-    var span = document.getElementsByClassName("close")[0];
-    </script>
-    <!-- END Button Edit SPJ -->
-
-    <!-- Start Button Hapus -->
-    <script>
-    $(document).on('click', '.hapus', function(){
-        var id_subkegiatan = $(this).attr('data-id');
-    Swal.fire({
-      title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
-      text: "Jika Ya Maka Data Akan Terhapus Permanen",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Hapus Saja!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location = "/admin/kegiatan/subkegiatan/hapus"+id_subkegiatan
-      }
-    });
-    });
-    </script>
-    <!-- End Button Hapus -->
-
-<!-- Button Status -->
+<!-- Button Edit pegawai -->
 <script>
+$(document).on('click', '.edit', function(){
+    var id_pelaksana = $(this).attr('data-id');
+    $.ajax({
+        type: 'POST',
+        url: '/pelaksana/fasilitator/edit',
+        cache: false,
+        data: {
+            _token: "{{ csrf_token() }}",
+            id_pelaksana: id_pelaksana
+        },
+        success: function(respond) {
+            $("#loadeditform").html(respond);
+        }
+    });
+    $("#modal-editobjek").modal("show");
+});
+
+$(document).on('click', '.hapus', function(){
+    var id_pelaksana = $(this).attr('data-id');
+    Swal.fire({
+        title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
+        text: "Jika Ya Maka Data Akan Terhapus Permanen",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Hapus Saja!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = "/pelaksana/fasilitator/hapus"+id_pelaksana
+        }
+    });
+});
+
 $(document).on('click', '.status', function(){
-    var id_subkegiatan = $(this).attr('data-id');
-Swal.fire({
-  title: "Apakah Anda Yakin Ingin Mengubah Status Data Ini ?",
-  text: "Jika Ya Maka Status Data Akan Diubah",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Ya, Ubah Status!"
-  }).then((result) => {
-  if (result.isConfirmed) {
-    window.location = "/admin/kegiatan/subkegiatan/status"+id_subkegiatan
-    }
-  });
+    var id_pelaksana = $(this).attr('data-id');
+    Swal.fire({
+        title: "Apakah Anda Yakin Ingin Mengubah Status Data Ini ?",
+        text: "Jika Ya Maka Status Data Akan Diubah",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Ubah Status!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = "/pelaksana/fasilitator/status"+id_pelaksana
+        }
+    });
 });
 </script>
-<!-- END Button Status -->
-
-
-
+<!-- END Button Edit pegawai -->
 
 @endpush

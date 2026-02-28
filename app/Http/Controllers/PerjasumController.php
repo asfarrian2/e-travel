@@ -19,10 +19,9 @@ use App\Models\Perjalanan;
 use App\Models\Tahun;
 use App\Models\User;
 
-class PerjadinController extends Controller
+class PerjasumController extends Controller
 {
-
-    public function pptk_view(Request $request)
+        public function pptk_view(Request $request)
     {
         $user  = Auth::user();
 
@@ -30,7 +29,7 @@ class PerjadinController extends Controller
         $ytahun = $tahun->tahun;
 
         if (!$request->jenis) {
-            return view('pptk.perjadin.view', [
+            return view('pptk.perjasum.view', [
                 'hapus'  => collect(),
                 'draft'  => collect(),
                 'disetujui'=> collect(),
@@ -39,7 +38,7 @@ class PerjadinController extends Controller
         }
 
         $baseQuery = Perjalanan::where('jenis', $request->jenis)
-            ->where('pengguna', '1')
+            ->where('pengguna', '2')
             ->where('id_tahun', $user->id_tahun)
             ->where('id_user', $user->id);
 
@@ -47,7 +46,7 @@ class PerjadinController extends Controller
         $draft  = (clone $baseQuery)->whereIn('status', ['1', '2'])->get(); // draft
         $disetujui  = (clone $baseQuery)->where('status', '3')->get(); // disetujui
 
-        return view('pptk.perjadin.view', compact('hapus', 'draft', 'disetujui', 'ytahun'));
+        return view('pptk.perjasum.view', compact('hapus', 'draft', 'disetujui', 'ytahun'));
     }
 
     public function kpa_view(Request $request)
@@ -67,8 +66,8 @@ class PerjadinController extends Controller
         }
 
         $baseQuery = Perjalanan::where('jenis', $request->jenis)
-                    ->where('pengguna', '1')
-                    ->where('id_tahun', $user->id_tahun);
+            ->where('pengguna', '2')
+            ->where('id_tahun', $user->id_tahun);
 
         $hapus  = (clone $baseQuery)->where('status', '0')->get(); // hapus
         $kirim  = (clone $baseQuery)->where('status', '2')->get(); // kirim
@@ -100,7 +99,7 @@ class PerjadinController extends Controller
             'tgl_pulang'   => $tgl_pulang,
             'angkutan'     => $angkutan,
             'jenis'        => $jenis,
-            'pengguna'     => '1',
+            'pengguna'     => '2',
             'status'       => '1'
         ];
         $simpan = Perjalanan::create($data);
@@ -118,7 +117,7 @@ class PerjadinController extends Controller
 
         $perjalanan = Perjalanan::where('id_perjalanan', $id_perjalanan)->first();
 
-        return view('pptk.perjadin.edit', compact('perjalanan'));
+        return view('pptk.perjasum.edit', compact('perjalanan'));
     }
 
     public function update(Request $request){
@@ -161,7 +160,7 @@ class PerjadinController extends Controller
                 ->unique('subkegiatan')
                 ->values();
 
-        return view('pptk.perjadin.kirim', compact('perjalanan', 'subkegiatan'));
+        return view('pptk.perjasum.kirim', compact('perjalanan', 'subkegiatan'));
     }
 
     public function setuju(Request $request){
@@ -242,11 +241,11 @@ class PerjadinController extends Controller
     // ***********************************
     // Proses Simpan Pelaksana / Pegawai 
     // ***********************************
-    public function add_pegawai(Request $request){
+    public function add_pelaksana(Request $request){
         
         $id_perjalanan   = Crypt::decrypt($request->id_perjalanan);
 
-        $pegawai = Pelaksana::where('status', '1')->where('jenis', '1')
+        $pelaksana = Pelaksana::where('status', '1')->where('jenis', '2')
         ->whereNotIn('id_pelaksana', function($query) use ($id_perjalanan) {
             $query->select('id_pelaksana')
                 ->from('tb_pelperjadin')
@@ -254,10 +253,10 @@ class PerjadinController extends Controller
         })
         ->orderby('kelas', 'asc')->get();
 
-        return view('pptk.perjadin.addpegawai', compact('pegawai'));
+        return view('pptk.perjasum.addpelaksana', compact('pelaksana'));
     }
 
-    public function simpanPegawai(Request $request)
+    public function simpanPelaksana(Request $request)
     {
         try {
             DB::beginTransaction();
@@ -295,7 +294,7 @@ class PerjadinController extends Controller
         }
     }
 
-    public function list_pegawai(Request $request){
+    public function list_pelaksana(Request $request){
 
         $id_perjalanan   = $request->id_perjalanan;
         $id_perjalanan   = Crypt::decrypt($id_perjalanan);
@@ -313,7 +312,7 @@ class PerjadinController extends Controller
 
         $pegawai       = Pelaksana::all();
 
-        return view('pptk.perjadin.listpegawai', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
+        return view('pptk.perjasum.listpelaksana', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
         
     }
 
@@ -374,7 +373,7 @@ class PerjadinController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper([0, 0, 595.28, 935.43], 'potrait');
         
-        $pdf->loadView('pptk.perjadin.output.spt', compact('perjadin', 'pelperjadin', 'kpa', 'tahun'));
+        $pdf->loadView('pptk.perjasum.output.spt', compact('perjadin', 'pelperjadin', 'kpa', 'tahun'));
 
 
         return $pdf->stream('SPT '.$perjadin->tgl_berangkat.' '.$perjadin->keperluan.' '.$perjadin->tujuan.'.pdf');
@@ -406,12 +405,10 @@ class PerjadinController extends Controller
             'margin-left' => '0.5in',
         ]);
         
-        $pdf->loadView('pptk.perjadin.output.sppd', compact('perjadin', 'pelperjadin', 'tahun', 'kpa'));
+        $pdf->loadView('pptk.perjasum.output.sppd', compact('perjadin', 'pelperjadin', 'tahun', 'kpa'));
 
 
         return $pdf->stream('SPD'.$perjadin->tgl_berangkat.' '.$perjadin->keperluan.' '.$perjadin->tujuan.'.pdf');
     }
-
-
-
+    
 }

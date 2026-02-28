@@ -14,14 +14,21 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Pelaksana;
 use App\Models\Pelperjadin;
 
-class PegawaiController extends Controller
+class FasilitatorController extends Controller
 {
-    public function view() {
+     public function view() {
 
-        $pegawai = Pelaksana::where('jenis', '1')->orderby('kelas', 'ASC')->get();
+        $pelaksana = Pelaksana::where('jenis', '2')->orderby('kelas', 'ASC')->get();
 
-        return view('admin.pegawai.view', compact('pegawai'));
+        return view('admin.fasilitator.view', compact('pelaksana'));
     }
+
+    public function pptk_view() {
+
+        $pelaksana = Pelaksana::where('jenis', '2')->get();
+
+        return view('pptk.fasilitator.view', compact('pelaksana'));
+    }   
 
     public function store(Request $request){
 
@@ -29,17 +36,17 @@ class PegawaiController extends Controller
         $nip            = $request->nip;
         $pangkgol       = $request->pangkgol;
         $jabatan        = $request->jabatan;
-        $kelas          = $request->kelas;
+        $alamat         = $request->alamat;
 
         $data = [
             'nama'       => $nama,
             'nip'        => $nip,
             'pangkgol'   => $pangkgol,
             'jabatan'    => $jabatan,
-            'kelas'      => $kelas,
-            'alamat'     => 'BPKUK-Prov Kalsel',
-            'kelompok'   => 'BPKUK-Prov Kalsel',
-            'jenis'      => '1',
+            'kelas'      => '0',
+            'alamat'     => $alamat,
+            'kelompok'   => 'Fasilitator',
+            'jenis'      => '2',
             'status'     => '1'
         ];
         $simpan = Pelaksana::create($data);
@@ -57,9 +64,9 @@ class PegawaiController extends Controller
         $id_pelaksana   = $request->id_pelaksana;
         $id_pelaksana   = Crypt::decrypt($id_pelaksana);
 
-        $pegawai    = Pelaksana::where('id_pelaksana', $id_pelaksana)->first();
+        $pelaksana    = Pelaksana::where('id_pelaksana', $id_pelaksana)->first();
 
-        return view('admin.pegawai.edit', compact('pegawai'));
+        return view('pptk.fasilitator.edit', compact('pelaksana'));
 
     }
 
@@ -67,16 +74,18 @@ class PegawaiController extends Controller
 
         $id_pelaksana   = $request->id;
         $id_pelaksana   = Crypt::decrypt($id_pelaksana);
-        $nama         = $request->nama;
-        $nip          = $request->nip;
-        $pangkgol     = $request->pangkgol;
-        $jabatan      = $request->jabatan;
+        $nama           = $request->nama;
+        $nip            = $request->nip;
+        $pangkgol       = $request->pangkgol;
+        $jabatan        = $request->jabatan;
+        $alamat         = $request->alamat;
 
         $data       = [
             'nama'       => $nama,
             'nip'        => $nip,
             'pangkgol'   => $pangkgol,
-            'jabatan'    => $jabatan
+            'jabatan'    => $jabatan,
+            'alamat'     => $alamat
         ];
 
         $update = Pelaksana::where('id_pelaksana', $id_pelaksana)->update($data);
@@ -130,13 +139,6 @@ class PegawaiController extends Controller
                 return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
             }
         }
-    }
-
-    public function pptk_view() {
-
-        $pegawai = Pelaksana::where('jenis', '1')->where('status', '1')->orderby('kelas', 'ASC')->get();
-
-        return view('pptk.pegawai.view', compact('pegawai'));
     }
 
 }

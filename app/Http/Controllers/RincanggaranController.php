@@ -30,22 +30,6 @@ class RincanggaranController extends Controller
 
     public function store(Request $request){
 
-        $id_tahun     = Auth::user()->id_tahun;
-        $tb_tahun     = Tahun::where('id_tahun', $id_tahun)->first();
-        $tahun        = $tb_tahun->tahun;
-
-        $id_rincanggaran = RincAnggaran::whereYear('created_at', $tahun)->latest('id_rincanggaran')->first();
-
-        $kodeobjek ="rng".$tahun;
-
-        if($id_rincanggaran == null){
-            $nomorurut = "00000001";
-        }else{
-            $nomorurut = substr($id_rincanggaran->id_rincanggaran, 7, 8) + 1;
-            $nomorurut = str_pad($nomorurut, 8, "0", STR_PAD_LEFT);
-        }
-        $id=$kodeobjek.$nomorurut;
-
         $id_anggaran     = $request->id;
         $id_anggaran     = Crypt::decrypt($id_anggaran);
         $jenis           = $request->jenis;
@@ -59,7 +43,6 @@ class RincanggaranController extends Controller
 
 
         $data = [
-            'id_rincanggaran'=> $id,
             'id_anggaran' => $id_anggaran,
             'jenis' => $jenis,
             'kegunaan' => $kegunaan,

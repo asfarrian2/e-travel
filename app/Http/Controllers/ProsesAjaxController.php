@@ -84,12 +84,18 @@ class ProsesAjaxController extends Controller
     public function getPerjAnggaran(Request $request)
     {
         try {
+            $id_perjalanan = $request->id_perjalanan;
+            $perjalanan = Perjalanan::where('id_perjalanan', Crypt::decrypt($id_perjalanan))->first();
+            $jenis      = $perjalanan->jenis; 
     
             $id_sub = Crypt::decrypt($request->id_subkegiatan);
             $id_rek = $request->id_rekening;
     
             $data = Anggaran::where('id_subkegiatan', $id_sub)
                     ->where('id_rekening', $id_rek)
+                    ->whereHas('rincian', function ($q) use ($jenis) {
+            $q->where('jenis', $jenis);
+        })
                     ->where('id_user', Auth::user()->id)
                     ->where('id_tahun', Auth::user()->id_tahun)
                     ->orderBy('nm_anggaran')
@@ -100,6 +106,26 @@ class ProsesAjaxController extends Controller
         } catch (\Exception $e) {
             return response()->json([], 500);
         }
+    }
+
+    public function getTujuan(Request $request)
+    {
+        $search = $request->q;
+
+        $data = Perjalanan::whereNot('jenis', '1')->where('tujuan', 'like', "%$search%")
+            ->select('tujuan')
+            ->distinct()
+            ->limit(10)
+            ->get();
+
+        return response()->json(
+            $data->map(function ($item) {
+                return [
+                    'id' => $item->tujuan,
+                    'text' => $item->tujuan
+                ];
+            })
+        );
     }
 
     

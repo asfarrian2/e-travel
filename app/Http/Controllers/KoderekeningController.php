@@ -25,23 +25,10 @@ class KoderekeningController extends Controller
 
     public function store(Request $request){
 
-        $id_rekening = Koderekening::latest('id_rekening')->first();
-
-        $kodeobjek ="rek";
-
-        if($id_rekening == null){
-            $nomorurut = "00001";
-        }else{
-            $nomorurut = substr($id_rekening->id_rekening, 3, 5) + 1;
-            $nomorurut = str_pad($nomorurut, 5, "0", STR_PAD_LEFT);
-        }
-        $id=$kodeobjek.$nomorurut;
-
         $koderekening = $request->koderekening;
         $rekening     = $request->rekening;
 
         $data = [
-            'id_rekening'    => $id,
             'kd_rekening'    => $koderekening,
             'nm_rekening'    => $rekening,
             'status'         => '1'

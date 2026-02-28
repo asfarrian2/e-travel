@@ -24,23 +24,10 @@ class SubkegiatanController extends Controller
 
     public function store(Request $request){
 
-        $id_subkegiatan = Subkegiatan::latest('id_subkegiatan')->first();
-
-        $kodeobjek ="sub";
-
-        if($id_subkegiatan == null){
-            $nomorurut = "00001";
-        }else{
-            $nomorurut = substr($id_subkegiatan->id_subkegiatan, 3, 5) + 1;
-            $nomorurut = str_pad($nomorurut, 5, "0", STR_PAD_LEFT);
-        }
-        $id=$kodeobjek.$nomorurut;
-
         $subkegiatan     = $request->subkegiatan;
         $kodesubkegiatan = $request->kodesubkegiatan;
 
         $data = [
-            'id_subkegiatan' => $id,
             'nm_subkegiatan' => $subkegiatan,
             'kd_subkegiatan' => $kodesubkegiatan,
             'status'         => '1'

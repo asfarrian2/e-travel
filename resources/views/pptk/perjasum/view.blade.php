@@ -11,7 +11,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
 							<div class="dashboard_bar">
-                                Perjalanan Dinas
+                                Perjalanan Fasilitator
                             </div>
                         </div>
                         <ul class="navbar-nav header-right">
@@ -60,7 +60,7 @@
 				<div class="row page-titles">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active"><a href="/admin/dashboard">E-Travel</a></li>
-						<li class="breadcrumb-item">Perjalanan Dinas</li>
+						<li class="breadcrumb-item">Perjalanan Fasilitator</li>
 					</ol>
                 </div>
                 <!-- row -->
@@ -68,7 +68,7 @@
                     <div class="col-12 col-md-6">
                         <div class="card">
                             <div class="card-body">
-                            <form action="/perjalanan/dinas" method="GET">
+                            <form action="/perjalanan/fasilitator" method="GET">
                              <div class="mb-3">
                                  <label class="form-label">Jenis Perjalanan :</label>
                                  <select class="input-default form-control" name="jenis" required>
@@ -86,7 +86,7 @@
 
                 @if (request('jenis'))
 
-                @include('pptk.perjadin.data1')
+                @include('pptk.perjasum.data1')
 
 
                 @endif
@@ -95,26 +95,26 @@
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h3 class="modal-title">Tambah Perjalanan Dinas</h3>
+                                <h3 class="modal-title">Tambah Perjalanan Fasilitator</h3>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal">
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <div class="basic-form">
-                                    <form action="{{ route('a.perjadin')}}" method="POST">
+                                    <form action="{{ route('a.perjasum')}}" method="POST">
                                     @csrf    
                                     <input type="hidden" name="jenis" value="1"  class="form-control input-default" required>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Dasar Perjalanan :</label>
+                                        <label class="form-label">Dasar Perjalanan:</label>
                                         <textarea style="height: 80px;" name="dasar" class="form-control" required></textarea>
                                     </div> 
                                     <div class="mb-3">
-                                        <label class="form-label">Keperluan / Perihal:</label>
+                                        <label class="form-label">Uraian:</label>
                                         <textarea style="height: 80px;" name="keperluan" class="form-control" required></textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Tujuan :</label>
+                                        <label class="form-label">Asal / Tujuan:</label>
                                         <select class="input-default form-control" name="tujuan" required>
                                             <option value="">-Pilih Tujuan-</option>
                                             <option value="Kota Banjarbaru">Kota Banjarbaru</option>
@@ -135,11 +135,11 @@
                                     <div class="row col-12">  
                                         <div class="mb-3 col-6">
                                             <label class="form-label">Tanggal Berangkat :</label>
-                                            <input type="date" name="tgl_berangkat" id="tgl_berangkat" class="form-control input-default" required>
+                                            <input type="date" name="tgl_berangkat" id="tgl_berangkat" class="tgl-berangkat form-control input-default" required>
                                         </div> 
                                         <div class="mb-3 col-6">
                                             <label class="form-label">Tanggal Pulang :</label>
-                                            <input type="date" name="tgl_pulang" id="tgl_pulang" class="form-control input-default" required>
+                                            <input type="date" name="tgl_pulang" id="tgl_pulang" class="tgl-pulang form-control input-default" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -161,35 +161,36 @@
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h3 class="modal-title">Tambah Perjalanan Dinas</h3>
+                                <h3 class="modal-title">Tambah Perjalanan Fasilitator</h3>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal">
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <div class="basic-form">
-                                    <form action="{{ route('a.perjadin')}}" method="POST">
+                                    <form action="{{ route('a.perjasum')}}" method="POST">
                                     @csrf    
                                     <input type="hidden" name="jenis" value="2"  class="form-control input-default" required>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Dasar Perjalanan :</label>
+                                        <label class="form-label">Dasar Perjalanan:</label>
                                         <textarea style="height: 80px;" name="dasar" class="form-control" required></textarea>
                                     </div> 
                                     <div class="mb-3">
-                                        <label class="form-label">Keperluan / Perihal:</label>
+                                        <label class="form-label">Uraian:</label>
                                         <textarea style="height: 80px;" name="keperluan" class="form-control" required></textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Tujuan :</label>
-                                        <select id="tujuan" name="tujuan" class="form-control"></select>                                    </div>
+                                        <select id="tujuan" name="tujuan" class="form-control"></select>                                    
+                                    </div>
                                     <div class="row col-12">  
                                         <div class="mb-3 col-6">
                                             <label class="form-label">Tanggal Berangkat :</label>
-                                            <input type="date" name="tgl_berangkat" id="tgl_berangkat" class="form-control input-default" required>
+                                            <input type="date" name="tgl_berangkat" id="tgl_berangkat" class="tgl-berangkat form-control input-default" required>
                                         </div> 
                                         <div class="mb-3 col-6">
                                             <label class="form-label">Tanggal Pulang :</label>
-                                            <input type="date" name="tgl_pulang" id="tgl_pulang" class="form-control input-default" required>
+                                            <input type="date" name="tgl_pulang" id="tgl_pulang" class="tgl-pulang form-control input-default" required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -299,14 +300,21 @@
     <script src="{{asset ('assets/vendor/select2/js/select2.full.min.js') }}"></script>
     <script src="{{asset ('assets/js/plugins-init/select2-init.js') }}"></script>
 
-    <script>
-    const tglBerangkat = document.getElementById('tgl_berangkat');
-    const tglPulang = document.getElementById('tgl_pulang');
+<script>
+document.addEventListener("change", function(e) {
 
-    tglBerangkat.addEventListener('change', () => {
-        tglPulang.min = tglBerangkat.value;
-    });
-    </script>
+    if (e.target.classList.contains("tgl-berangkat")) {
+
+        let modal = e.target.closest(".modal");
+        let tglPulang = modal.querySelector(".tgl-pulang");
+
+        if (tglPulang) {
+            tglPulang.min = e.target.value;
+        }
+    }
+
+});
+</script>
 
     <script>
      $('#tujuan').select2({
@@ -471,7 +479,7 @@
     var id_perjalanan = $(this).attr('data-id');
     $.ajax({
         type: 'POST',
-        url: '/perjalanan/dinas/edit',
+        url: '/perjalanan/fasilitator/edit',
         cache: false,
         data: {
             _token: "{{ csrf_token() }}",
@@ -539,7 +547,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/perjalanan/dinas/addpegawai',
+            url: '/perjalanan/fasilitator/addpelaksana',
             cache: false,
             data: {
                 _token: "{{ csrf_token() }}",
@@ -617,7 +625,7 @@ $(document).on('click', '.listpegawai', function () {
 
     $.ajax({
         type: 'POST',
-        url: '/perjalanan/dinas/listpegawai',
+        url: '/perjalanan/fasilitator/listpelaksana',
         data: {
             _token: "{{ csrf_token() }}",
             id_perjalanan: id_perjalanan

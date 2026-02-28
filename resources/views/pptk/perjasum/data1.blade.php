@@ -63,7 +63,7 @@
                                                                                             <div style="font-size: 12px">(-Empty)</div>
                                                                                         @endif
                                                             </td>
-                                                            <td style="color: black;">{{$d->keperluan}}<br><br><div style="font-size: 12px">Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_pulang)->diffInDays(\Carbon\Carbon::parse($d->tgl_berangkat)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</div></td>
+                                                            <td style="color: black;">{{$d->keperluan}}<br><br><div style="font-size: 12px">Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_berangkat)->diffInDays(\Carbon\Carbon::parse($d->tgl_pulang)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</div></td>
                                                             <td style="color: black;">
                                                                 @if ($d->pelperjadin->isEmpty())
                                                                     <div style="color: red">Data Tidak Ada</div>
@@ -94,11 +94,10 @@
                                                                              @else
                                                                                 <a type="button" class="dropdown-item kirim" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-send color-muted"></i> Kirim</a>
                                                                             @endif
-                                                                        <a type="button" class="dropdown-item addpegawai" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-plus color-muted"></i> Pegawai</a>
+                                                                        <a type="button" class="dropdown-item addpegawai" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-plus color-muted"></i> Fasilitator</a>
 								            							<a type="button" class="dropdown-item edit" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
 								            							<a type="button" class="dropdown-item hapus" data-id="{{Crypt::encrypt($d->id_perjalanan)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
                                                                         @elseif ($d->status == '2')
-                                                                        <a type="button" href="/perjalanan/dinas/spt/{{Crypt::encrypt($d->id_perjalanan)}}" class="dropdown-item" target="_BLANK"> <i class="fa fa-print color-muted"></i> SPT</a>
                                                                         <a type="button" class="dropdown-item batal" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-ban color-muted"></i> Batalkan</a>
                                                                         @else
                                                                         @endif
@@ -122,7 +121,7 @@
                                             </div>
                                         </div>
 
-                                        @include('pptk.perjadin.data2')
+                                        @include('pptk.perjasum.data2')
                                         
                                     </div>
                                 </div>
