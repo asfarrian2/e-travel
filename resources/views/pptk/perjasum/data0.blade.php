@@ -1,9 +1,10 @@
 <div class="tab-pane fade" id="status0">
     <div class="table-responsive">
-        <table id="data-0" class="display" style="min-width: 1000px">
+        <table id="data-0" class="display" style="min-width: 1200px">
             <thead>
                 <tr>
                     <th style="text-align:center;">NO.</th>
+                    <th style="text-align:center;">TANGGAL</th>
                     <th style="text-align:center; width: 250px">DASAR</th>
                     <th style="text-align:center; width: 300px">KEPERLUAN / PERIODE / TUJUAN</th>
                     <th style="text-align:center; width: 300px">PELAKSANA</th>
@@ -14,24 +15,25 @@
             @foreach ($hapus->sortByDesc('id_perjalanan') as $d)
                 <tr>
                     <td style="color: black; text-align:center;">NPJ/{{ substr($d->id_perjalanan, -4) }}/{{ $ytahun }}</td>
+                    <td style="color: black; text-align:center;">{{ \Carbon\Carbon::parse($d->tgl)->format('d/m/Y') }}</td>
                     <td style="color: black;"><div class="bootstrap-popover d-inline-block">
-                                                <a type="button" data-bs-container="body" data-bs-toggle="popover"
-                                                    data-bs-placement="right" data-bs-content="{{ $d->dasar }}" title="Dasar Pelaksanaan">
-                                                    {{ Str::limit($d->dasar, 75, '...')}}
-                                                </a>
-                                                </div>
-                                                <br>
-                                                @php
-                                                    $Sub = $d->anggaran?->subkegiatan?->kd_subkegiatan;
-                                                    $Rek = $d->anggaran?->rekening?->kd_rekening;
-                                                    $Anm = $d->anggaran?->nm_anggaran;
-                                                    $Asb = $d->anggaran?->sub_anggaran;
-                                                @endphp
-                                                @if($Sub && $Rek)
-                                                    <div style="font-size: 12px">({{ $Sub }}. {{ $Rek }} {{ $Anm }} - {{ $Asb }})</div>
-                                                @else
-                                                    <div style="font-size: 12px">(-Empty)</div>
-                                                @endif
+                        <a type="button" data-bs-container="body" data-bs-toggle="popover"
+                            data-bs-placement="right" data-bs-content="{{ $d->dasar }}" title="Dasar Pelaksanaan">
+                            {{ Str::limit($d->dasar, 75, '...')}}
+                        </a>
+                        </div>
+                        <br>
+                        @php
+                            $Sub = $d->anggaran?->subkegiatan?->kd_subkegiatan;
+                            $Rek = $d->anggaran?->rekening?->kd_rekening;
+                            $Anm = $d->anggaran?->nm_anggaran;
+                            $Asb = $d->anggaran?->sub_anggaran;
+                        @endphp
+                        @if($Sub && $Rek)
+                            <div style="font-size: 12px">({{ $Sub }}. {{ $Rek }} {{ $Anm }} - {{ $Asb }})</div>
+                        @else
+                            <div style="font-size: 12px">(-Empty)</div>
+                        @endif
                     </td>
                     <td style="color: black;">{{$d->keperluan}}<br><br><div style="font-size: 12px">Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_pulang)->diffInDays(\Carbon\Carbon::parse($d->tgl_berangkat)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</div></td>
                     <td style="color: black;">
@@ -54,6 +56,7 @@
             <tfoot>
                 <tr>
                     <th style="text-align:center;">NO.</th>
+                    <th style="text-align:center;">TANGGAL</th>
                     <th style="text-align:center;">DASAR</th>
                     <th style="text-align:center;">KEPERLUAN / PERIODE / TUJUAN</th>
                     <th style="text-align:center;">PELAKSANA</th>

@@ -44,6 +44,7 @@ let dataSet = [
     "use strict"
     //example 1
     var table = $('#example').DataTable({
+      order: [[0, 'desc']],
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } ,
@@ -71,6 +72,7 @@ let dataSet = [
 
 	//data-0
     var table = $('#data-0').DataTable({
+      order: [[0, 'desc']],
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } ,
@@ -98,6 +100,7 @@ let dataSet = [
 
 	//data-1
     var table = $('#data-1').DataTable({
+      order: [[0, 'desc']],
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } ,
@@ -125,6 +128,7 @@ let dataSet = [
 
 	//data-2
     var table = $('#data-2').DataTable({
+       order: [[0, 'desc']],
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } ,
@@ -152,6 +156,7 @@ let dataSet = [
 
 	//data-3
     var table = $('#data-3').DataTable({
+      order: [[0, 'desc']],
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } ,

@@ -1,7 +1,10 @@
-<form action="{{ route('u.fasilitator')}}" method="POST">
+<form action="{{ route('u.perjasum')}}" method="POST">
         @csrf    
         <input type="hidden" name="id" value="{{ Crypt::encrypt($perjalanan->id_perjalanan) }}"  class="form-control input-default" required>
-        
+        <div class="mb-3 col-6">
+                <label class="form-label">Tanggal :</label>
+                <input type="date" name="tgl" value="{{ $perjalanan->tgl }}" class="form-control input-default" required>
+        </div> 
         <div class="mb-3">
             <label class="form-label">Dasar Perjalanan :</label>
             <textarea style="height: 80px;" name="dasar" class="form-control" required>{{ $perjalanan->dasar }}</textarea>
@@ -24,10 +27,10 @@
                 <option value="Kab. Tanah Bumbu" {{ $perjalanan->tujuan == 'Kab. Tanah Bumbu' ? 'selected' : '' }}>Kab. Tanah Bumbu</option>
                 <option value="Kab. Kotabaru" {{ $perjalanan->tujuan == 'Kab. Kotabaru' ? 'selected' : '' }}>Kab. Kotabaru</option>
                 <option value="Kab. Tabalong" {{ $perjalanan->tujuan == 'Kab. Tabalong' ? 'selected' : '' }}>Kab. Tabalong</option>
-                <option value="Kab. Tapin">Kab. Tapin</option>
+                <option value="Kab. Tapin" {{ $perjalanan->tujuan == 'Kab. Tapin' ? 'selected' : '' }}>Kab. Tapin</option>
                 <option value="Kab. Hulu Sungai Selatan" {{ $perjalanan->tujuan == 'Kab. Hulu Sungai Selatan' ? 'selected' : '' }}>Kab. Hulu Sungai Selatan</option>
                 <option value="Kab. Hulu Sungai Tengah" {{ $perjalanan->tujuan == 'Kab. Hulu Sungai Tengah' ? 'selected' : '' }}>Kab. Hulu Sungai Tengah</option>
-                <option value="Kab. Hulu Sungai Utara" {{ $perjalanan->tujuan == 'Kab. Hulu Utara' ? 'selected' : '' }}>Kab. Hulu Sungai Utara</option>
+                <option value="Kab. Hulu Sungai Utara" {{ $perjalanan->tujuan == 'Kab. Hulu Sungai Utara' ? 'selected' : '' }}>Kab. Hulu Sungai Utara</option>
             </select>
             @else
                 <input type="text" name="tujuan" value="{{ $perjalanan->tujuan }}" class="form-control input-default" required>

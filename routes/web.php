@@ -109,6 +109,7 @@ Route::post('/perjalanan/fasilitator/edit', [PerjasumController::class, 'edit'])
 Route::post('/perjalanan/fasilitator/update', [PerjasumController::class, 'update'])->name('u.perjasum');
 Route::get('/perjalanan/fasilitator/hapus/{id_perjalanan}', [PerjasumController::class, 'hapus']);
 Route::post('/perjalanan/fasilitator/addpelaksana', [PerjasumController::class, 'add_pelaksana']);
+Route::post('/simpanperjalanan-fasilitator', [PerjasumController::class, 'simpanPelaksana']);
 Route::post('/perjalanan/fasilitator/listpelaksana', [PerjasumController::class, 'list_pelaksana']);
 Route::post('/perjalanan/fasilitator/kirim', [PerjasumController::class, 'kirim']);
 Route::post('/perjalanan/fasilitator/submit', [PerjasumController::class, 'submit'])->name('s.perjasum');
@@ -130,6 +131,11 @@ Route::get('/kpa/perjalanan/dinas', [PerjadinController::class, 'kpa_view']);
 Route::post('/kpa/perjalanan/dinas/listpegawai', [PerjadinController::class, 'list_pegawai']);
 Route::get('/kpa/perjalanan/dinas/batal/{id_perjalanan}', [PerjadinController::class, 'batal']);
 Route::get('/kpa/perjalanan/dinas/setuju/{id_perjalanan}', [PerjadinController::class, 'setuju']);
+//--KPA-Perjasum--
+Route::get('/kpa/perjalanan/fasilitator', [PerjasumController::class, 'kpa_view']);
+Route::post('/kpa/perjalanan/fasilitator/listpelaksana', [PerjasumController::class, 'list_pelaksana']);
+Route::get('/kpa/perjalanan/fasilitator/batal/{id_perjalanan}', [PerjasumController::class, 'batal']);
+Route::get('/kpa/perjalanan/fasilitator/setuju/{id_perjalanan}', [PerjasumController::class, 'setuju']);
 
 
 });

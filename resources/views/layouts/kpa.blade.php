@@ -131,8 +131,9 @@
 							<span class="nav-text">Perjalanan</span>
 						</a>
                         <ul aria-expanded="false">
-                            <li @if(Request::is('kpa/perjalanan/dinas*')) class="mm-active" @endif><a href="/kpa/perjalanan/dinas" @if(Request::is('kpa/perjalanan/dinas*')) class="mm-active" @endif>SPT / SPPD</a></li>
-                            <li @if(Request::is('kpa/perjalanan/luardaerah*')) class="mm-active" @endif><a href="/kpa/perjalanan/luardaerah" @if(Request::is('kpa/perjalanan/luardaerah*')) class="mm-active" @endif>Realisasi</a></li>
+                            <li @if(Request::is('kpa/perjalanan/dinas*')) class="mm-active" @endif><a href="/kpa/perjalanan/dinas" @if(Request::is('kpa/perjalanan/dinas*')) class="mm-active" @endif>Dinas</a></li>
+                            <li @if(Request::is('kpa/perjalanan/fasilitator*')) class="mm-active" @endif><a href="/kpa/perjalanan/fasilitator" @if(Request::is('kpa/perjalanan/fasilitator*')) class="mm-active" @endif>Fasilitator</a></li>
+                            <li @if(Request::is('kpa/perjalanan/diklat*')) class="mm-active" @endif><a href="/kpa/perjalanan/diklat" @if(Request::is('kpa/perjalanan/diklat*')) class="mm-active" @endif>Peserta Diklat</a></li>
                         </ul>
                     </li>
                     <div class="copyright">

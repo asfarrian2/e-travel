@@ -13,6 +13,7 @@ class Perjalanan extends Model
     protected $keyType = 'string';
     protected $fillable = [ 'id_user',
                             'id_tahun', 
+                            'tgl',
                             'dasar', 
                             'keperluan', 
                             'tujuan', 

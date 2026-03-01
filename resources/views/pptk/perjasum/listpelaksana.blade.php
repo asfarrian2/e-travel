@@ -5,7 +5,7 @@
             <tr>
                 <th style="text-align:center;">NO.</th>
                 <th style="text-align:center; font-size:16px; width:50%;">NAMA / NIP <br>PANGKAT / GOL</th>
-                <th style="text-align:center; font-size:16px; width:45%;">JABATAN</th>
+                <th style="text-align:center; font-size:16px; width:45%;">JABATAN / <br>ASAL / INSTANSI</th>
                 <th style="text-align:center; font-size:16px; width:5%;"></th>
             </tr>
         </thead>
@@ -14,13 +14,15 @@
             <tr>
             <td style="color: black; font-size:12px">{{ $loop->iteration }}</td>
             <td style="color: black; font-size:12px"><b>{{ $d->pelaksana->nama }}</b><br>{{ $d->pelaksana->nip}}</td>
-            <td style="color: black; font-size:12px">{{ $d->pelaksana->jabatan }}</td>
+            <td style="color: black; font-size:12px">{{ $d->pelaksana->jabatan }} - {{ $d->pelaksana->alamat }}</td>
+            @if ($status == 1)
             <td>
 		    	<div class="form-check custom-checkbox checkbox-success check-xs me-3">
 		    		<input type="checkbox" class="form-check-input hapus-checkbox" value="{{ Crypt::encrypt($d->id_pelperjadin)}}">
 		    		<label class="form-check-label" for="customCheckBox2"></label>
 		    	</div>
 		    </td>
+            @endif
             </tr>
             @endforeach
         </tbody>

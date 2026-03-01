@@ -347,6 +347,8 @@
     <!-- Datatable -->
     <script src="{{asset ('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset ('assets/js/plugins-init/datatables.init.js') }}"></script>
+    <script src="{{asset ('assets/vendor/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{asset ('assets/js/plugins-init/select2-init.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     <!-- Button Edit SPJ -->
@@ -497,10 +499,13 @@ $('.nm_anggaran').select2({
         },
         processResults: function (data) {
             return {
-                results: data
-            };
+                results: data };
         }
     }
+    }).on('select2:open', function () {
+    setTimeout(function () {
+        document.querySelector('.select2-container--open .select2-search__field').focus();
+    }, 0);
 });
 
 $('.sub_anggaran').select2({
@@ -522,6 +527,10 @@ $('.sub_anggaran').select2({
             };
         }
     }
+    }).on('select2:open', function () {
+    setTimeout(function () {
+        document.querySelector('.select2-container--open .select2-search__field').focus();
+    }, 0);
 });
 </script>
 

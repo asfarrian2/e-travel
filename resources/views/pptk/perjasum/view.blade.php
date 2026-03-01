@@ -104,7 +104,10 @@
                                     <form action="{{ route('a.perjasum')}}" method="POST">
                                     @csrf    
                                     <input type="hidden" name="jenis" value="1"  class="form-control input-default" required>
-                                    
+                                    <div class="mb-3 col-6">
+                                        <label class="form-label">Tanggal :</label>
+                                        <input type="date" name="tgl" class="form-control input-default" required>
+                                    </div> 
                                     <div class="mb-3">
                                         <label class="form-label">Dasar Perjalanan:</label>
                                         <textarea style="height: 80px;" name="dasar" class="form-control" required></textarea>
@@ -170,7 +173,10 @@
                                     <form action="{{ route('a.perjasum')}}" method="POST">
                                     @csrf    
                                     <input type="hidden" name="jenis" value="2"  class="form-control input-default" required>
-                                    
+                                    <div class="mb-3 col-6">
+                                            <label class="form-label">Tanggal :</label>
+                                            <input type="date" name="tgl" class="form-control input-default" required>
+                                    </div> 
                                     <div class="mb-3">
                                         <label class="form-label">Dasar Perjalanan:</label>
                                         <textarea style="height: 80px;" name="dasar" class="form-control" required></textarea>
@@ -296,7 +302,6 @@
     <!-- Datatable -->
     <script src="{{asset ('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset ('assets/js/plugins-init/datatables.init.js') }}"></script>
-    <script src="{{asset ('assets/vendor/jquery-nice-select/js/jquery.nice-select.min.js') }}"></script>
     <script src="{{asset ('assets/vendor/select2/js/select2.full.min.js') }}"></script>
     <script src="{{asset ('assets/js/plugins-init/select2-init.js') }}"></script>
 
@@ -556,6 +561,11 @@ document.addEventListener("change", function(e) {
             success: function (respond) {
                 $("#loadaddpegawai").html(respond);
                 $("#modal-addpegawai").modal("show");
+                $('.pelaksana-select').select2({
+                    dropdownParent: $('#modal-addpegawai'),
+                    placeholder: "Pilih Pelaksana",
+                    width: '100%'
+                });
             }
         });
     });
@@ -565,54 +575,52 @@ document.addEventListener("change", function(e) {
     // =======================
     $(document).on('click', '#simpan-pegawai', function () {
 
-    var pegawaiId = [];
-    $('.pegawai-checkbox:checked').each(function () {
-        pegawaiId.push($(this).val());
-    });
+    var pegawaiId = $('.pelaksana-select').val();
 
-    if (pegawaiId.length === 0) {
+    if (!pegawaiId || pegawaiId.length === 0) {
         Swal.fire({
             icon: 'warning',
             title: 'Perhatian',
-            text: 'Pilih Minimal Satu Pegawai'
+            text: 'Pilih Minimal Satu Fasilitator'
         });
         return;
     }
 
-        $.ajax({
-            type: 'POST',
-            url: '/simpanperjadin-pegawai',
-            data: {
-                _token: '{{ csrf_token() }}',
-                id_perjalanan: id_perjalanan,
-                pegawai_id: pegawaiId
-            },
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: response.message,
-                    }).then(() => {
-                        location.reload(); //REFRESH HALAMAN
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: response.error ?? 'Terjadi kesalahan'
-                    });
-                }
-            },
-            error: function (xhr) {
+    $.ajax({
+        type: 'POST',
+        url: '/simpanperjalanan-fasilitator',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id_perjalanan: id_perjalanan,
+            pegawai_id: pegawaiId
+        },
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: response.message,
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: xhr.responseJSON?.error ?? 'Server error'
+                    title: 'Gagal',
+                    text: response.error ?? 'Terjadi kesalahan'
                 });
             }
-        });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: xhr.responseJSON?.error ?? 'Server error'
+            });
+        }
     });
+
+});
     </script>
 
     <script>

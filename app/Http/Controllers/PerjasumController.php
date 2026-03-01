@@ -21,7 +21,7 @@ use App\Models\User;
 
 class PerjasumController extends Controller
 {
-        public function pptk_view(Request $request)
+    public function pptk_view(Request $request)
     {
         $user  = Auth::user();
 
@@ -42,9 +42,9 @@ class PerjasumController extends Controller
             ->where('id_tahun', $user->id_tahun)
             ->where('id_user', $user->id);
 
-        $hapus  = (clone $baseQuery)->where('status', '0')->get(); // hapus
-        $draft  = (clone $baseQuery)->whereIn('status', ['1', '2'])->get(); // draft
-        $disetujui  = (clone $baseQuery)->where('status', '3')->get(); // disetujui
+        $hapus  = (clone $baseQuery)->where('status', '0')->latest('created_at')->get(); // hapus
+        $draft  = (clone $baseQuery)->whereIn('status', ['1', '2'])->latest('created_at')->get(); // draft
+        $disetujui  = (clone $baseQuery)->where('status', '3')->latest('created_at')->get(); // disetujui
 
         return view('pptk.perjasum.view', compact('hapus', 'draft', 'disetujui', 'ytahun'));
     }
@@ -57,7 +57,7 @@ class PerjasumController extends Controller
         $ytahun = $tahun->tahun;
 
         if (!$request->jenis) {
-            return view('kpa.perjadin.view', [
+            return view('kpa.perjasum.view', [
                 'hapus'  => collect(),
                 'kirim'  => collect(),
                 'disetujui'=> collect(),
@@ -69,11 +69,11 @@ class PerjasumController extends Controller
             ->where('pengguna', '2')
             ->where('id_tahun', $user->id_tahun);
 
-        $hapus  = (clone $baseQuery)->where('status', '0')->get(); // hapus
-        $kirim  = (clone $baseQuery)->where('status', '2')->get(); // kirim
-        $disetujui  = (clone $baseQuery)->where('status', '3')->get(); // disetujui
+        $hapus  = (clone $baseQuery)->where('status', '0')->latest('created_at')->get(); // hapus
+        $kirim  = (clone $baseQuery)->where('status', '2')->latest('created_at')->get(); // kirim
+        $disetujui  = (clone $baseQuery)->where('status', '3')->latest('created_at')->get(); // disetujui
 
-        return view('kpa.perjadin.view', compact('hapus', 'kirim', 'disetujui', 'ytahun'));
+        return view('kpa.perjasum.view', compact('hapus', 'kirim', 'disetujui', 'ytahun'));
     }
 
     public function store(Request $request){
@@ -82,6 +82,7 @@ class PerjasumController extends Controller
         $id_tahun = Auth::user()->id_tahun;
         
         $dasar          = $request->dasar;
+        $tgl            = $request->tgl;
         $keperluan      = $request->keperluan;
         $tujuan         = $request->tujuan;
         $tgl_berangkat  = $request->tgl_berangkat;
@@ -92,6 +93,7 @@ class PerjasumController extends Controller
         $data = [
             'id_user'      => $id_user,
             'id_tahun'     => $id_tahun,
+            'tgl'          => $tgl,
             'dasar'        => $dasar,
             'keperluan'    => $keperluan,
             'tujuan'       => $tujuan,
@@ -124,6 +126,7 @@ class PerjasumController extends Controller
 
         $id_perjalanan= Crypt::decrypt($request->id);
         $dasar        = $request->dasar;
+        $tgl          = $request->tgl;
         $keperluan    = $request->keperluan;
         $tujuan       = $request->tujuan;
         $tgl_berangkat= $request->tgl_berangkat;
@@ -132,6 +135,7 @@ class PerjasumController extends Controller
 
         $data       = [
             'dasar'        => $dasar,
+            'tgl'          => $tgl,
             'keperluan'    => $keperluan,
             'tujuan'       => $tujuan,
             'tgl_berangkat'=> $tgl_berangkat,
@@ -258,21 +262,34 @@ class PerjasumController extends Controller
 
     public function simpanPelaksana(Request $request)
     {
+        $request->validate([
+            'id_perjalanan' => 'required',
+            'pegawai_id'    => 'required|array',
+            'pegawai_id.*'  => 'required'
+        ]);
+    
         try {
+    
             DB::beginTransaction();
     
-            // Ambil & decrypt data
+            // Decrypt ID Perjalanan
             $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
-            $pegawai_id    = $request->pegawai_id;
     
-            // Simpan data pegawai
-            foreach ($pegawai_id as $id_pelaksana) {
+            foreach ($request->pegawai_id as $id_pelaksana) {
     
-                Pelperjadin::create([
-                    'id_perjalanan'  => $id_perjalanan,
-                    'id_pelaksana'   => Crypt::decrypt($id_pelaksana),
-                ]);
-
+                $id_pelaksana = Crypt::decrypt($id_pelaksana);
+    
+                // Cek agar tidak double insert
+                $exists = Pelperjadin::where('id_perjalanan', $id_perjalanan)
+                    ->where('id_pelaksana', $id_pelaksana)
+                    ->exists();
+    
+                if (!$exists) {
+                    Pelperjadin::create([
+                        'id_perjalanan' => $id_perjalanan,
+                        'id_pelaksana'  => $id_pelaksana,
+                    ]);
+                }
             }
     
             DB::commit();

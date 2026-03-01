@@ -43,9 +43,9 @@ class PerjadinController extends Controller
             ->where('id_tahun', $user->id_tahun)
             ->where('id_user', $user->id);
 
-        $hapus  = (clone $baseQuery)->where('status', '0')->get(); // hapus
-        $draft  = (clone $baseQuery)->whereIn('status', ['1', '2'])->get(); // draft
-        $disetujui  = (clone $baseQuery)->where('status', '3')->get(); // disetujui
+        $hapus  = (clone $baseQuery)->where('status', '0')->latest('created_at')->get(); // hapus
+        $draft  = (clone $baseQuery)->whereIn('status', ['1', '2'])->latest('created_at')->get(); // draft
+        $disetujui  = (clone $baseQuery)->where('status', '3')->latest('created_at')->get(); // disetujui
 
         return view('pptk.perjadin.view', compact('hapus', 'draft', 'disetujui', 'ytahun'));
     }
@@ -70,9 +70,9 @@ class PerjadinController extends Controller
                     ->where('pengguna', '1')
                     ->where('id_tahun', $user->id_tahun);
 
-        $hapus  = (clone $baseQuery)->where('status', '0')->get(); // hapus
-        $kirim  = (clone $baseQuery)->where('status', '2')->get(); // kirim
-        $disetujui  = (clone $baseQuery)->where('status', '3')->get(); // disetujui
+        $hapus  = (clone $baseQuery)->where('status', '0')->latest('created_at')->get(); // hapus
+        $kirim  = (clone $baseQuery)->where('status', '2')->latest('created_at')->get(); // kirim
+        $disetujui  = (clone $baseQuery)->where('status', '3')->latest('created_at')->get(); // disetujui
 
         return view('kpa.perjadin.view', compact('hapus', 'kirim', 'disetujui', 'ytahun'));
     }
@@ -83,6 +83,7 @@ class PerjadinController extends Controller
         $id_tahun = Auth::user()->id_tahun;
         
         $dasar          = $request->dasar;
+        $tgl            = $request->tgl;
         $keperluan      = $request->keperluan;
         $tujuan         = $request->tujuan;
         $tgl_berangkat  = $request->tgl_berangkat;
@@ -93,6 +94,7 @@ class PerjadinController extends Controller
         $data = [
             'id_user'      => $id_user,
             'id_tahun'     => $id_tahun,
+            'tgl'          => $tgl,
             'dasar'        => $dasar,
             'keperluan'    => $keperluan,
             'tujuan'       => $tujuan,
@@ -125,6 +127,7 @@ class PerjadinController extends Controller
 
         $id_perjalanan= Crypt::decrypt($request->id);
         $dasar        = $request->dasar;
+        $tgl          = $request->tgl;
         $keperluan    = $request->keperluan;
         $tujuan       = $request->tujuan;
         $tgl_berangkat= $request->tgl_berangkat;
@@ -132,6 +135,7 @@ class PerjadinController extends Controller
         $angkutan     = $request->angkutan;
 
         $data       = [
+            'tgl'          => $tgl,
             'dasar'        => $dasar,
             'keperluan'    => $keperluan,
             'tujuan'       => $tujuan,
@@ -260,20 +264,21 @@ class PerjadinController extends Controller
     public function simpanPegawai(Request $request)
     {
         try {
+    
             DB::beginTransaction();
     
-            // Ambil & decrypt data
             $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
-            $pegawai_id    = $request->pegawai_id;
     
-            // Simpan data pegawai
-            foreach ($pegawai_id as $id_pelaksana) {
+            foreach ($request->pegawai_id as $id_pelaksana) {
     
-                Pelperjadin::create([
-                    'id_perjalanan'  => $id_perjalanan,
-                    'id_pelaksana'   => Crypt::decrypt($id_pelaksana),
-                ]);
-
+                $id_pelaksana = Crypt::decrypt($id_pelaksana);
+    
+                Pelperjadin::firstOrCreate(
+                    [
+                        'id_perjalanan' => $id_perjalanan,
+                        'id_pelaksana'  => $id_pelaksana,
+                    ]
+                );
             }
     
             DB::commit();

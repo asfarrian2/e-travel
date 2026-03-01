@@ -1,21 +1,21 @@
-<div class="tab-pane fade" id="status0">
+<div class="tab-pane fade" id="status2">
     <div class="table-responsive">
-        <table id="data-0" class="display" style="min-width: 1200px">
+        <table id="data-2" class="display" style="min-width: 1200px">
             <thead>
                 <tr>
-                    <th style="text-align:center;">NO.</th>
-                    <th style="text-align:center;">TANGGAL</th>
-                    <th style="text-align:center; width: 250px">DASAR</th>
+                    <th style="text-align:center; width: 10px">NO.</th>
+                    <th style="text-align:center; width: 120px">PPTK</th>
+                    <th style="text-align:center; width: 120px">DASAR</th>
                     <th style="text-align:center; width: 300px">KEPERLUAN / PERIODE / TUJUAN</th>
-                    <th style="text-align:center; width: 300px">PELAKSANA</th>
-                    <th style="text-align:center;">STATUS</th>
+                    <th style="text-align:center; width: 120px">PELAKSANA</th>
+                    <th style="text-align:center; width: 10px">STATUS</th>
                 </tr>
             </thead>
             <tbody>
-            @foreach ($hapus->sortByDesc('id_perjalanan') as $d)
+            @foreach ($disetujui as $d)
                 <tr>
                     <td style="color: black; text-align:center;">NPJ/{{ substr($d->id_perjalanan, -4) }}/{{ $ytahun }}</td>
-                    <td style="color: black; text-align:center;">{{ \Carbon\Carbon::parse($d->tgl)->format('d/m/Y') }}</td>
+                    <td style="color: black;">{{ $d->pptk->pegawai->nama}}</td>
                     <td style="color: black;"><div class="bootstrap-popover d-inline-block">
                         <a type="button" data-bs-container="body" data-bs-toggle="popover"
                             data-bs-placement="right" data-bs-content="{{ $d->dasar }}" title="Dasar Pelaksanaan">
@@ -35,7 +35,7 @@
                             <div style="font-size: 12px">(-Empty)</div>
                         @endif
                     </td>
-                    <td style="color: black;">{{$d->keperluan}}<br><br><div style="font-size: 12px">Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_pulang)->diffInDays(\Carbon\Carbon::parse($d->tgl_berangkat)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</div></td>
+                    <td style="color: black;">{{$d->keperluan}}<br>Periode : {{ \Carbon\Carbon::parse($d->tgl_berangkat)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($d->tgl_pulang)->format('d/m/Y') }} ({{ \Carbon\Carbon::parse($d->tgl_pulang)->diffInDays(\Carbon\Carbon::parse($d->tgl_berangkat)) + 1 }} Hari)<br>Tujuan: {{ $d->tujuan }}</td>
                     <td style="color: black;">
                         @if ($d->pelperjadin->isEmpty())
                             <div style="color: red">Data Tidak Ada</div>
@@ -49,20 +49,25 @@
                         <a type="button" class="listpegawai" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-list color-muted"></i> Selengkapnya..</a>
                         @endif
                     </td>
-                    <td style="text-align:center;"><span class="badge light badge-danger">Dihapus</span></td>
+                    @if ($d->status == '3')
+                        <td style="text-align:center;"><span class="badge light badge-success">Sudah Diverifikasi</span></td>
+                        @else
+                        <td style="text-align:center;"><span class="badge light badge-secondary">Terkirim</span></td>
+                    @endif
                 @endforeach
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <th style="text-align:center;">NO.</th>
-                    <th style="text-align:center;">TANGGAL</th>
+                    <th style="text-align:center; width: 120px">PPTK</th>
                     <th style="text-align:center;">DASAR</th>
                     <th style="text-align:center;">KEPERLUAN / PERIODE / TUJUAN</th>
-                    <th style="text-align:center;">PELAKSANA</th>
+                    <th style="text-align:center;">PEGAWAI</th>
                     <th style="text-align:center;">STATUS</th>
                 </tr>
             </tfoot>
         </table>
     </div>    
 </div>
+@include('kpa.perjasum.data0')

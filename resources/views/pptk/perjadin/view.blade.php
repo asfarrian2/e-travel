@@ -104,7 +104,10 @@
                                     <form action="{{ route('a.perjadin')}}" method="POST">
                                     @csrf    
                                     <input type="hidden" name="jenis" value="1"  class="form-control input-default" required>
-                                    
+                                    <div class="mb-3 col-6">
+                                        <label class="form-label">Tanggal :</label>
+                                        <input type="date" name="tgl" class="form-control input-default" required>
+                                    </div> 
                                     <div class="mb-3">
                                         <label class="form-label">Dasar Perjalanan :</label>
                                         <textarea style="height: 80px;" name="dasar" class="form-control" required></textarea>
@@ -170,7 +173,10 @@
                                     <form action="{{ route('a.perjadin')}}" method="POST">
                                     @csrf    
                                     <input type="hidden" name="jenis" value="2"  class="form-control input-default" required>
-                                    
+                                    <div class="mb-3 col-6">
+                                            <label class="form-label">Tanggal :</label>
+                                            <input type="date" name="tgl" class="form-control input-default" required>
+                                    </div> 
                                     <div class="mb-3">
                                         <label class="form-label">Dasar Perjalanan :</label>
                                         <textarea style="height: 80px;" name="dasar" class="form-control" required></textarea>

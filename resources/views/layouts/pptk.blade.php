@@ -25,7 +25,6 @@
      <!-- Sweat Alert -->
      <link href="{{ asset ('assets/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
 	<!-- Style css -->
-    <link href="{{ asset ('assets/vendor/jquery-nice-select/css/nice-select.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset ('assets/vendor/select2/css/select2.min.css') }}">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
@@ -195,11 +194,8 @@
     <!-- Required vendors -->
     <script src="{{ asset('assets/vendor/global/global.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @stack('myscript')
-	<script src="{{ asset('assets/vendor/chart.js/Chart.bundle.min.js') }}"></script>
-	<script src="{{ asset('assets/vendor/jquery-nice-select/js/jquery.nice-select.min.js') }}"></script>
 
+    @stack('myscript')
     <script src="{{ asset('assets/js/custom.min.js') }}"></script>
 	<script src="{{ asset('assets/js/dlabnav-init.js') }}"></script>
 

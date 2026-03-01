@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th style="text-align:center;">NO.</th>
+                    <th style="text-align:center;">TANGGAL</th>
                     <th style="text-align:center; width: 250px">DASAR</th>
                     <th style="text-align:center; width: 300px">KEPERLUAN / PERIODE / TUJUAN</th>
                     <th style="text-align:center; width: 300px">PELAKSANA</th>
@@ -14,6 +15,7 @@
             @foreach ($disetujui as $d)
                 <tr>
                     <td style="color: black; text-align:center;">NPJ/{{ substr($d->id_perjalanan, -4) }}/{{ $ytahun }}</td>
+                    <td style="color: black; text-align:center;">{{ \Carbon\Carbon::parse($d->tgl)->format('d/m/Y') }}</td>
                     <td style="color: black;"><div class="bootstrap-popover d-inline-block">
                         <a type="button" data-bs-container="body" data-bs-toggle="popover"
                             data-bs-placement="right" data-bs-content="{{ $d->dasar }}" title="Dasar Pelaksanaan">
@@ -54,6 +56,7 @@
             <tfoot>
                 <tr>
                     <th style="text-align:center;">NO.</th>
+                    <th style="text-align:center;">TANGGAL</th>
                     <th style="text-align:center;">DASAR</th>
                     <th style="text-align:center;">KEPERLUAN / PERIODE / TUJUAN</th>
                     <th style="text-align:center;">PEGAWAI</th>
