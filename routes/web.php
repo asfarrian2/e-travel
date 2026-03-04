@@ -134,7 +134,7 @@ Route::get('/perjalanan/diklat/pelaksana/data/{id_perjalanan}', [PesertaControll
 Route::post('/perjalanan/diklat/peserta/store', [PesertaController::class, 'store'])->name('a.peserta');
 Route::post('/perjalanan/diklat/peserta/edit', [PesertaController::class, 'edit']);
 Route::post('/perjalanan/diklat/peserta/update', [PesertaController::class, 'update'])->name('u.peserta');
-Route::get('/perjalanan/diklat/peserta/hapus/{$id_pelaksana}', [PesertaController::class, 'hapus']);
+Route::get('/perjalanan/diklat/peserta/hapus/{id_pelaksana}/{id_pelperjadin}', [PesertaController::class, 'hapus']);
 
 
 });
@@ -157,6 +157,11 @@ Route::get('/kpa/perjalanan/fasilitator', [PerjasumController::class, 'kpa_view'
 Route::post('/kpa/perjalanan/fasilitator/listpelaksana', [PerjasumController::class, 'list_pelaksana']);
 Route::get('/kpa/perjalanan/fasilitator/batal/{id_perjalanan}', [PerjasumController::class, 'batal']);
 Route::get('/kpa/perjalanan/fasilitator/setuju/{id_perjalanan}', [PerjasumController::class, 'setuju']);
+//--KPA-Perjadik--
+Route::get('/kpa/perjalanan/diklat', [PerjadikController::class, 'kpa_view']);
+Route::post('/kpa/perjalanan/diklat/listpelaksana', [PerjadikController::class, 'list_pelaksana']);
+Route::get('/kpa/perjalanan/diklat/batal/{id_perjalanan}', [PerjadikController::class, 'batal']);
+Route::get('/kpa/perjalanan/diklat/setuju/{id_perjalanan}', [PerjadikController::class, 'setuju']);
 
 
 });

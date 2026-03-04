@@ -75,23 +75,23 @@
                                 <table style="color:black">
                                     <tr>
                                         <td style="width: 28%; padding-bottom:10px">Dasar</td>
-                                        <td> : &nbsp; {{ $perjalanan->dasar }}</td>
+                                        <td style="width: 50%; padding-bottom:10px"> : &nbsp; {{ $perjalanan->dasar }}</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 28%; padding-bottom:10px">Uraian</td>
-                                        <td> : &nbsp; {{ $perjalanan->keperluan }}</td>
+                                        <td style="width: 50%; padding-bottom:10px"> : &nbsp; {{ $perjalanan->keperluan }}</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 28%; padding-bottom:10px">Tanggal Pengajuan</td>
-                                        <td> : &nbsp; {{ \Carbon\Carbon::parse($perjalanan->tgl)->locale('id')->translatedFormat('d F Y') }}</td>
+                                        <td style="width: 50%; padding-bottom:10px"> : &nbsp; {{ \Carbon\Carbon::parse($perjalanan->tgl)->locale('id')->translatedFormat('d F Y') }}</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 28%; padding-bottom:10px">Tanggal Berangkat</td>
-                                        <td> : &nbsp; {{ \Carbon\Carbon::parse($perjalanan->tgl_berangkat)->locale('id')->translatedFormat('d F Y') }}</td>
+                                        <td style="width: 50%; padding-bottom:10px"> : &nbsp; {{ \Carbon\Carbon::parse($perjalanan->tgl_berangkat)->locale('id')->translatedFormat('d F Y') }}</td>
                                     </tr>
                                     <tr>
                                         <td style="width: 28%; padding-bottom:10px">Tanggal Pulang</td>
-                                        <td> : &nbsp; {{ \Carbon\Carbon::parse($perjalanan->tgl_pulang)->locale('id')->translatedFormat('d F Y') }}</td>
+                                        <td style="width: 50%; padding-bottom:10px"> : &nbsp; {{ \Carbon\Carbon::parse($perjalanan->tgl_pulang)->locale('id')->translatedFormat('d F Y') }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -104,7 +104,9 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Data Pelaksana</h4>
+                                @if ($perjalanan->status == 1 )
                                 <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#tambahdata">+Tambah</button>
+                                @endif
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -129,16 +131,17 @@
                                                 <td style="color: black;">{{ $d->pelaksana->jabatan }}</td>
                                                 <td style="color: black; font-size:12px; text-align:center;">Rp {{ number_format($d->uang_harian,0,',','.') }}</td>
                                                 <td style="color: black; font-size:12px; text-align:center;">Rp {{ number_format($d->uang_transport,0,',','.') }}</td>
-                                                <td>
+                                                <td>@if ($perjalanan->status == 1)
                                                     <div class="dropdown">
 														<button type="button" class="btn btn-primary light sharp" data-bs-toggle="dropdown">
 															<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
 														</button>
 														<div class="dropdown-menu">
-															<a type="button" class="dropdown-item edit" data-id="{{Crypt::encrypt($d->id_pelaksana)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-															<a type="button" class="dropdown-item hapus" data-id="{{Crypt::encrypt($d->id_pelaksana)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
+															<a type="button" class="dropdown-item edit" data-idp="{{Crypt::encrypt($perjalanan->id_perjalanan)}}" data-id="{{Crypt::encrypt($d->id_pelaksana)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
+															<a type="button" class="dropdown-item hapus" data-idp="{{Crypt::encrypt($perjalanan->id_perjalanan)}}" data-id="{{Crypt::encrypt($d->id_pelaksana)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
 														</div>
 													</div>
+                                                    @endif
                                                 </td>
                                             @endforeach
                                             </tr>
@@ -263,6 +266,7 @@
 <!-- Button Edit pegawai -->
 <script>
 $(document).on('click', '.edit', function(){
+    var id_perjalanan = $(this).attr('data-idp');
     var id_pelaksana = $(this).attr('data-id');
     $.ajax({
         type: 'POST',
@@ -270,10 +274,12 @@ $(document).on('click', '.edit', function(){
         cache: false,
         data: {
             _token: "{{ csrf_token() }}",
+            id_perjalanan: id_perjalanan,
             id_pelaksana: id_pelaksana
         },
         success: function(respond) {
             $("#loadeditform").html(respond);
+            $('.pagu').mask("#.##0", { reverse:true });
         }
     });
     $("#modal-editobjek").modal("show");
@@ -281,6 +287,7 @@ $(document).on('click', '.edit', function(){
 
 $(document).on('click', '.hapus', function(){
     var id_pelaksana = $(this).attr('data-id');
+    var id_pelperjadin = $(this).attr('data-idp');
     Swal.fire({
         title: "Apakah Anda Yakin Data Ini Ingin Di Hapus ?",
         text: "Jika Ya Maka Data Akan Terhapus Permanen",
@@ -291,7 +298,7 @@ $(document).on('click', '.hapus', function(){
         confirmButtonText: "Ya, Hapus Saja!"
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location = "/perjalanan/diklat/peserta/hapus/"+id_pelaksana
+            window.location = "/perjalanan/diklat/peserta/hapus/"+id_pelaksana+"/"+id_pelperjadin
         }
     });
 });

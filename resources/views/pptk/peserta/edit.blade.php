@@ -2,12 +2,13 @@
          @csrf
              <div class="mb-3">
                  <label class="form-label">Nama :</label>
-                 <input type="hidden" name="id" value="{{ Crypt::encrypt($peserta->id_peserta) }}" class="form-control input-default" required>
+                <input type="hidden" name="id_pelaksana" value="{{ Crypt::encrypt($peserta->id_pelaksana) }}" class="form-control input-default" required>
+                 <input type="hidden" name="id_pelperjadin" value="{{ Crypt::encrypt($pelperjadin->id_pelperjadin) }}" class="form-control input-default" required>
                  <input type="text" name="nama" value="{{ $peserta->nama }}" class="form-control input-default" required>
              </div>
              <div class="mb-3">
                  <label class="form-label">Asal Peserta :</label>
-                 <select class="input-default form-control" name="tujuan" required>
+                 <select class="input-default form-control" name="alamat" required>
                     <option value="">-Pilih Tujuan-</option>
                     <option value="Kota Banjarbaru" {{ $peserta->alamat == 'Prov. Kalimantan Selatan' ? 'selected' : '' }}>Prov. Kalimantan Selatan</option>
                     <option value="Kota Banjarbaru" {{ $peserta->alamat == 'Kota Banjarbaru' ? 'selected' : '' }}>Kota Banjarbaru</option>
@@ -31,11 +32,11 @@
              </div>
              <div class="mb-3">
                  <label class="form-label">Uang Harian :</label>
-                 <input type="text" name="jabatan" value="{{ $peserta->jabatan }}" class="form-control input-default pagu" required>
+                 <input type="text" name="uang_harian" value="{{ $pelperjadin->uang_harian }}" class="form-control input-default pagu" required>
              </div>
              <div class="mb-3">
                  <label class="form-label">Uang Transport :</label>
-                 <input type="text" name="alamat" value="{{ $peserta->alamat }}" class="form-control input-default pagu" required>
+                 <input type="text" name="uang_transport" value="{{ $pelperjadin->uang_transport }}" class="form-control input-default pagu" required>
              </div>
         </div>
      </div>

@@ -96,33 +96,41 @@ class PesertaController extends Controller
     //Tampilkan Halaman Edit Data
     public function edit(Request $request){
 
-        $id_pelaksana   = $request->id_pelaksana;
-        $id_pelaksana   = Crypt::decrypt($id_pelaksana);
+        $id_perjalanan   = Crypt::decrypt($request->id_perjalanan);
+        $id_pelaksana    = Crypt::decrypt($request->id_pelaksana);
 
-        $peserta    = Pelaksana::where('id_pelaksana', $id_pelaksana)->first();
+        $peserta     = Pelaksana::where('id_pelaksana', $id_pelaksana)->first();
+        $pelperjadin = Pelperjadin::where('id_perjalanan', $id_perjalanan)->where('id_pelaksana', $id_pelaksana)
+                       ->first();
 
-        return view('pptk.peserta.edit', compact('peserta'));
+        return view('pptk.peserta.edit', compact('peserta', 'pelperjadin'));
 
     }
 
     public function update(Request $request){
 
-        $id_pelaksana   = $request->id;
-        $id_pelaksana   = Crypt::decrypt($id_pelaksana);
-        $nama         = $request->nama;
-        $nip          = $request->nip;
-        $pangkgol     = $request->pangkgol;
-        $jabatan      = $request->jabatan;
+        $id_pelaksana   = Crypt::decrypt($request->id_pelaksana);
+        $id_pelperjadin = Crypt::decrypt($request->id_pelperjadin);
+        $nama           = $request->nama;
+        $alamat         = $request->alamat;
+        $jabatan        = $request->jabatan;
+        $uang_harian    = str_replace('.', '', $request->uang_harian);
+        $uang_transport = str_replace('.', '', $request->uang_transport);
 
-        $data       = [
+        $data1       = [
             'nama'       => $nama,
-            'nip'        => $nip,
-            'pangkgol'   => $pangkgol,
+            'alamat'     => $alamat,
             'jabatan'    => $jabatan
         ];
 
-        $update = Pelaksana::where('id_pelaksana', $id_pelaksana)->update($data);
-        if ($update) {
+        $data2       = [
+            'uang_harian'    => $uang_harian,
+            'uang_transport' => $uang_transport
+        ];
+
+        $uPelaksana   = Pelaksana::where('id_pelaksana', $id_pelaksana)->update($data1);
+        $uPelperjadin = Pelperjadin::where('id_pelperjadin', $id_pelperjadin)->update($data2);
+        if ($uPelaksana & $uPelperjadin) {
             return Redirect::back()->with(['success' => 'Data Berhasil Diubah']);
         } else {
             return Redirect::back()->with(['warning' => 'Data Gagal Diubah']);
@@ -156,22 +164,21 @@ class PesertaController extends Controller
         }
     }
 
-    public function hapus($id_pelaksana){
+    public function hapus($id_pelaksana, $id_perjalanan){
 
-        $id_pelaksana = Crypt::decrypt($id_pelaksana);
+        $id_pelaksana   = Crypt::decrypt($id_pelaksana);
+        $id_perjalanan  = Crypt::decrypt($id_perjalanan);
+        $pelperjadin    = Pelperjadin::where('id_perjalanan', $id_perjalanan)->where('id_pelaksana', $id_pelaksana)
+                          ->first();
 
-        $cekData = Pelperjadin::where('id_pelaksana', $id_pelaksana)->first();
-        if ($cekData) {
-              return Redirect::back()->with(['warning' => 'Tidak dapat menghapus data']);
-          } else {
-            $delete = Pelaksana::where('id_pelaksana',$id_pelaksana)->delete();
-
-            if ($delete) {
-                return Redirect::back()->with(['success' => 'Data Berhasil Dihapus']);
-            } else {
-                return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
-            }
+        $delete1 = Pelaksana::where('id_pelaksana',$id_pelaksana)->delete();
+        $delete2 = Pelperjadin::where('id_pelperjadin',$pelperjadin->id_pelperjadin)->delete();
+        if ($delete1 & $delete2) {
+            return Redirect::back()->with(['success' => 'Data Berhasil Dihapus']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
         }
+        
     }
 
 

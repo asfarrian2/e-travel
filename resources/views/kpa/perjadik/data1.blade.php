@@ -38,7 +38,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    @foreach ($draft->sortByDesc('id_perjalanan') as $d)
+                                                    @foreach ($kirim->sortByDesc('id_perjalanan') as $d)
                                                         <tr>
                                                             <td style="color: black; text-align:center;">NPJ/{{ substr($d->id_perjalanan, -4) }}/{{ $ytahun }}</td>
                                                             <td style="color: black; text-align:center;">{{ \Carbon\Carbon::parse($d->tgl)->format('d/m/Y') }}</td>
@@ -72,18 +72,10 @@
                                                                  @if ($d->pelperjadin->count() > 3)
                                                                      Dll...
                                                                  @endif 
-                                                                 @if ($d->status == 1)
-                                                                <a type="button" href="/perjalanan/diklat/pelaksana/data/{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-list color-muted"></i> Selengkapnya..</a>
-                                                                 @else
-                                                                <a type="button" class="listpelaksana" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-list color-muted"></i> Selengkapnya..</a>
-                                                                @endif
+                                                                <a type="button" class="listpegawai" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-list color-muted"></i> Selengkapnya..</a>
                                                                 @endif
                                                             </td>
-                                                            @if ($d->status == '1')
-                                                                <td style="text-align:center;"><span class="badge light badge-warning">Draft</span></td>
-                                                                @elseif ($d->status == '2')
-                                                                <td style="text-align:center;"><span class="badge light badge-secondary">Terkirim</span></td>
-                                                            @endif
+                                                            <td style="text-align:center;"><span class="badge light badge-warning">Belum Diverifikasi</span></td>   
                                                             <td>
                                                                 <div class="dropdown">
 								            						<button type="button" class="btn btn-primary light sharp" data-bs-toggle="dropdown">
@@ -91,18 +83,8 @@
 								            						</button>
                                                                     @csrf
 								            						<div class="dropdown-menu">
-                                                                         @if ($d->status == '1')
-                                                                             @if ($d->pelperjadin->isEmpty())
-                                                                             @else
-                                                                                <a type="button" class="dropdown-item kirim" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-send color-muted"></i> Kirim</a>
-                                                                            @endif
-                                                                        <a type="button" class="dropdown-item addpegawai" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-plus color-muted"></i> Peserta</a>
-								            							<a type="button" class="dropdown-item edit" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-pencil color-muted"></i> Edit</a>
-								            							<a type="button" class="dropdown-item hapus" data-id="{{Crypt::encrypt($d->id_perjalanan)}}" ><i class="fa fa-trash color-muted"></i> Hapus</a>
-                                                                        @elseif ($d->status == '2')
+                                                                        <a type="button" class="dropdown-item setuju" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-check color-muted"></i> Setujui</a>
                                                                         <a type="button" class="dropdown-item batal" data-id="{{Crypt::encrypt($d->id_perjalanan)}}"> <i class="fa fa-ban color-muted"></i> Batalkan</a>
-                                                                        @else
-                                                                        @endif
 								            						</div>
 								            					</div>
                                                             </td>

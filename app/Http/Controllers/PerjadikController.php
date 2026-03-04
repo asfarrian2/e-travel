@@ -49,17 +49,7 @@ class PerjadikController extends Controller
         $tahun  = Tahun::where('id_tahun', $user->id_tahun)->first();
         $ytahun = $tahun->tahun;
 
-        if (!$request->jenis) {
-            return view('kpa.perjadik.view', [
-                'hapus'  => collect(),
-                'kirim'  => collect(),
-                'disetujui'=> collect(),
-                'ytahun' => $ytahun
-            ]);
-        }
-
-        $baseQuery = Perjalanan::where('jenis', $request->jenis)
-            ->where('pengguna', '2')
+        $baseQuery = Perjalanan::where('pengguna', '3')
             ->where('id_tahun', $user->id_tahun);
 
         $hapus  = (clone $baseQuery)->where('status', '0')->latest('created_at')->get(); // hapus
@@ -383,7 +373,7 @@ class PerjadikController extends Controller
 
         $pegawai       = Pelaksana::all();
 
-        return view('pptk.perjadik.listpelaksana', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
+        return view('kpa.perjadik.listpelaksana', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
         
     }
 
