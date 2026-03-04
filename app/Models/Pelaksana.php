@@ -12,7 +12,7 @@ class Pelaksana extends Model
     protected $keyType = 'string';
     protected $fillable = ['nama', 'nip', 'pangkgol', 'jabatan', 'alamat', 'kelompok', 'status', 'kelas', 'jenis'];
     
-   protected static function boot()
+    protected static function boot()
     {
         parent::boot();
 

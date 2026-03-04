@@ -6,8 +6,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FasilitatorController;
 use App\Http\Controllers\KoderekeningController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PerjadikController;
 use App\Http\Controllers\PerjadinController;
 use App\Http\Controllers\PerjasumController;
+use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\ProsesAjaxController;
 use App\Http\Controllers\RincanggaranController;
 use App\Http\Controllers\SubkegiatanController;
@@ -114,6 +116,25 @@ Route::post('/perjalanan/fasilitator/listpelaksana', [PerjasumController::class,
 Route::post('/perjalanan/fasilitator/kirim', [PerjasumController::class, 'kirim']);
 Route::post('/perjalanan/fasilitator/submit', [PerjasumController::class, 'submit'])->name('s.perjasum');
 Route::get('/perjalanan/fasilitator/batal/{id_perjalanan}', [PerjasumController::class, 'batal']);
+//--PPTK-Perjalanan Diklat--
+Route::get('/perjalanan/diklat', [PerjadikController::class, 'pptk_view']);
+Route::post('/perjalanan/diklat/store', [PerjadikController::class, 'store'])->name('a.perjadik');
+Route::post('/perjalanan/diklat/edit', [PerjadikController::class, 'edit']);
+Route::post('/perjalanan/diklat/update', [PerjadikController::class, 'update'])->name('u.perjadik');
+Route::post('/perjalanan/diklat/importpelaksana', [PerjadikController::class, 'importPelaksana'])->name('import.pelaksana');
+Route::post('/perjalanan/diklat/addpelaksana', [PerjadikController::class, 'add_pelaksana']);
+Route::post('/simpanperjalanan-diklat', [PerjadikController::class, 'simpanPelaksana']);
+Route::get('/perjalanan/diklat/hapus/{id_perjalanan}', [PerjadikController::class, 'hapus']);
+Route::post('/perjalanan/diklat/listpelaksana', [PerjadikController::class, 'list_pelaksana']);
+Route::post('/perjalanan/diklat/kirim', [PerjadikController::class, 'kirim']);
+Route::post('/perjalanan/diklat/submit', [PerjadikController::class, 'submit'])->name('s.perjadik');
+Route::get('/perjalanan/diklat/batal/{id_perjalanan}', [PerjadikController::class, 'batal']);
+//--PPTK-Peserta Diklat--
+Route::get('/perjalanan/diklat/pelaksana/data/{id_perjalanan}', [PesertaController::class, 'pptk_view']);
+Route::post('/perjalanan/diklat/peserta/store', [PesertaController::class, 'store'])->name('a.peserta');
+Route::post('/perjalanan/diklat/peserta/edit', [PesertaController::class, 'edit']);
+Route::post('/perjalanan/diklat/peserta/update', [PesertaController::class, 'update'])->name('u.peserta');
+Route::get('/perjalanan/diklat/peserta/hapus/{$id_pelaksana}', [PesertaController::class, 'hapus']);
 
 
 });

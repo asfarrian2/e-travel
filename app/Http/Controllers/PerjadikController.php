@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
+use App\Imports\PelaksanaImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Anggaran;
 use App\Models\Pelaksana;
 use App\Models\Pelperjadin;
@@ -19,7 +22,7 @@ use App\Models\Perjalanan;
 use App\Models\Tahun;
 use App\Models\User;
 
-class PerjasumController extends Controller
+class PerjadikController extends Controller
 {
     public function pptk_view(Request $request)
     {
@@ -28,17 +31,7 @@ class PerjasumController extends Controller
         $tahun  = Tahun::where('id_tahun', $user->id_tahun)->first();
         $ytahun = $tahun->tahun;
 
-        if (!$request->jenis) {
-            return view('pptk.perjasum.view', [
-                'hapus'  => collect(),
-                'draft'  => collect(),
-                'disetujui'=> collect(),
-                'ytahun' => $ytahun
-            ]);
-        }
-
-        $baseQuery = Perjalanan::where('jenis', $request->jenis)
-            ->where('pengguna', '2')
+        $baseQuery = Perjalanan::where('pengguna', '3')
             ->where('id_tahun', $user->id_tahun)
             ->where('id_user', $user->id);
 
@@ -46,7 +39,7 @@ class PerjasumController extends Controller
         $draft  = (clone $baseQuery)->whereIn('status', ['1', '2'])->latest('created_at')->get(); // draft
         $disetujui  = (clone $baseQuery)->where('status', '3')->latest('created_at')->get(); // disetujui
 
-        return view('pptk.perjasum.view', compact('hapus', 'draft', 'disetujui', 'ytahun'));
+        return view('pptk.perjadik.view', compact('hapus', 'draft', 'disetujui', 'ytahun'));
     }
 
     public function kpa_view(Request $request)
@@ -57,7 +50,7 @@ class PerjasumController extends Controller
         $ytahun = $tahun->tahun;
 
         if (!$request->jenis) {
-            return view('kpa.perjasum.view', [
+            return view('kpa.perjadik.view', [
                 'hapus'  => collect(),
                 'kirim'  => collect(),
                 'disetujui'=> collect(),
@@ -73,7 +66,7 @@ class PerjasumController extends Controller
         $kirim  = (clone $baseQuery)->where('status', '2')->latest('created_at')->get(); // kirim
         $disetujui  = (clone $baseQuery)->where('status', '3')->latest('created_at')->get(); // disetujui
 
-        return view('kpa.perjasum.view', compact('hapus', 'kirim', 'disetujui', 'ytahun'));
+        return view('kpa.perjadik.view', compact('hapus', 'kirim', 'disetujui', 'ytahun'));
     }
 
     public function store(Request $request){
@@ -101,7 +94,7 @@ class PerjasumController extends Controller
             'tgl_pulang'   => $tgl_pulang,
             'angkutan'     => $angkutan,
             'jenis'        => $jenis,
-            'pengguna'     => '2',
+            'pengguna'     => '3',
             'status'       => '1'
         ];
         $simpan = Perjalanan::create($data);
@@ -119,7 +112,7 @@ class PerjasumController extends Controller
 
         $perjalanan = Perjalanan::where('id_perjalanan', $id_perjalanan)->first();
 
-        return view('pptk.perjasum.edit', compact('perjalanan'));
+        return view('pptk.perjadik.edit', compact('perjalanan'));
     }
 
     public function update(Request $request){
@@ -164,7 +157,7 @@ class PerjasumController extends Controller
                 ->unique('subkegiatan')
                 ->values();
 
-        return view('pptk.perjasum.kirim', compact('perjalanan', 'subkegiatan'));
+        return view('pptk.perjadik.kirim', compact('perjalanan', 'subkegiatan'));
     }
 
     public function setuju(Request $request){
@@ -239,9 +232,6 @@ class PerjasumController extends Controller
         
     }
 
-
-
-
     // ***********************************
     // Proses Simpan Pelaksana / Pegawai 
     // ***********************************
@@ -249,67 +239,131 @@ class PerjasumController extends Controller
         
         $id_perjalanan   = Crypt::decrypt($request->id_perjalanan);
 
-        $pelaksana = Pelaksana::where('status', '1')->where('jenis', '2')
-        ->whereNotIn('id_pelaksana', function($query) use ($id_perjalanan) {
-            $query->select('id_pelaksana')
-                ->from('tb_pelperjadin')
-                ->where('id_perjalanan', $id_perjalanan);
-        })
-        ->orderby('kelas', 'asc')->get();
+        $perjalanan = Perjalanan::where('id_perjalanan', $id_perjalanan)->first();
 
-        return view('pptk.perjasum.addpelaksana', compact('pelaksana'));
+        return view('pptk.perjadik.addpelaksana', compact('perjalanan'));
     }
 
-    public function simpanPelaksana(Request $request)
+  public function importPelaksana(Request $request)
     {
-        $request->validate([
-            'id_perjalanan' => 'required',
-            'pegawai_id'    => 'required|array',
-            'pegawai_id.*'  => 'required'
+        // ============================
+        // VALIDASI AWAL FORM
+        // ============================
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls',
+            'id'   => 'required'
         ]);
-    
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->with('warning', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+
         try {
-    
-            DB::beginTransaction();
-    
-            // Decrypt ID Perjalanan
-            $id_perjalanan = Crypt::decrypt($request->id_perjalanan);
-    
-            foreach ($request->pegawai_id as $id_pelaksana) {
-    
-                $id_pelaksana = Crypt::decrypt($id_pelaksana);
-    
-                // Cek agar tidak double insert
-                $exists = Pelperjadin::where('id_perjalanan', $id_perjalanan)
-                    ->where('id_pelaksana', $id_pelaksana)
-                    ->exists();
-    
-                if (!$exists) {
-                    Pelperjadin::create([
-                        'id_perjalanan' => $id_perjalanan,
-                        'id_pelaksana'  => $id_pelaksana,
-                    ]);
+
+            // ============================
+            // AMBIL DATA
+            // ============================
+            $id_perjalanan = Crypt::decrypt($request->id);
+            $kelompok      = $request->kelompok;
+
+            $file = $request->file('file');
+            $rows = Excel::toArray([], $file)[0]; // sheet pertama
+
+            foreach ($rows as $index => $row) {
+
+                // Skip header (baris pertama)
+                if ($index == 0) {
+                    continue;
                 }
+
+                $nama           = trim($row[0] ?? '');
+                $alamat         = trim($row[1] ?? '');
+                $jabatan        = trim($row[2] ?? '');
+                $uang_harian    = $this->cleanNumber($row[3] ?? 0);
+                $uang_transport = $this->cleanNumber($row[4] ?? 0);
+
+                // ============================
+                // VALIDASI PER BARIS
+                // ============================
+
+                if (empty($nama)) {
+                    throw new \Exception("Baris ".($index+1)." : Nama tidak boleh kosong");
+                }
+
+                if (empty($alamat)) {
+                    throw new \Exception("Baris ".($index+1)." : Alamat tidak boleh kosong");
+                }
+
+                if (empty($jabatan)) {
+                    throw new \Exception("Baris ".($index+1)." : Jabatan tidak boleh kosong");
+                }
+
+                if (!is_numeric($uang_harian)) {
+                    throw new \Exception("Baris ".($index+1)." : Uang harian harus angka");
+                }
+
+                if (!is_numeric($uang_transport)) {
+                    throw new \Exception("Baris ".($index+1)." : Uang transport harus angka");
+                }
+
+                if ($uang_harian < 0 || $uang_transport < 0) {
+                    throw new \Exception("Baris ".($index+1)." : Nominal tidak boleh minus");
+                }
+
+                // ============================
+                // SIMPAN tb_pelaksana
+                // ============================
+
+                $pelaksana = Pelaksana::create([
+                    'nama'      => $nama,
+                    'alamat'    => $alamat,
+                    'kelompok'  => $kelompok,
+                    'jabatan'   => $jabatan,
+                    'jenis'     => 1,
+                    'kelas'     => 0,
+                    'status'    => 1
+                ]);
+
+                // ============================
+                // SIMPAN tb_pelperjadin
+                // ============================
+
+                Pelperjadin::create([
+                    'id_perjalanan' => $id_perjalanan,
+                    'id_pelaksana'  => $pelaksana->id_pelaksana,
+                    'uang_harian'   => $uang_harian,
+                    'uang_transport'=> $uang_transport
+                ]);
             }
-    
+
             DB::commit();
-    
-            return response()->json([
-                'success' => true,
-                'message' => 'Data pegawai berhasil disimpan'
-            ]);
-    
+
+            return redirect()->back()
+                ->with('success', 'Import data berhasil disimpan');
+
         } catch (\Exception $e) {
-    
+
             DB::rollBack();
-    
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menyimpan data',
-                'error'   => $e->getMessage()
-            ], 500);
+
+            return redirect()->back()
+                ->with('warning', $e->getMessage());
         }
     }
+
+    // ==================================
+    // FUNGSI MEMBERSIHKAN FORMAT ANGKA
+    // ==================================
+    private function cleanNumber($value)
+    {
+        $value = trim($value);
+        $value = str_replace('.', '', $value); // hapus ribuan
+        $value = str_replace(',', '.', $value); // ubah koma jadi titik
+        return $value;
+    }
+
 
     public function list_pelaksana(Request $request){
 
@@ -321,53 +375,18 @@ class PerjasumController extends Controller
         $status        = $perjalanan->status;
 
         $pelperjadin     = Pelperjadin::where('id_perjalanan', $id_perjalanan)
-                         ->orderBy(
-                            Pelaksana::select('kelas')
-                                ->whereColumn('tb_pelaksana.id_pelaksana', 'tb_pelperjadin.id_pelaksana')
-                            )
-                        ->get();
+                          ->orderBy(
+                             Pelaksana::select('kelas')
+                                 ->whereColumn('tb_pelaksana.id_pelaksana', 'tb_pelperjadin.id_pelaksana')
+                             )
+                         ->get();
 
         $pegawai       = Pelaksana::all();
 
-        return view('pptk.perjasum.listpelaksana', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
+        return view('pptk.perjadik.listpelaksana', compact('pegawai', 'id_perjalanan', 'pelperjadin', 'pegawai', 'status'));
         
     }
 
-    public function hapusPegawai(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            if (!$request->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tidak ada data yang dipilih'
-                ]);
-            }
-
-            foreach ($request->id as $encryptedId) {
-                $id = Crypt::decrypt($encryptedId);
-
-                Pelperjadin::where('id_pelperjadin', $id)->delete();
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil dihapus'
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menghapus data',
-                'error'   => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    
+        
 }
+

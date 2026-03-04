@@ -44,7 +44,6 @@ let dataSet = [
     "use strict"
     //example 1
     var table = $('#example').DataTable({
-      order: [[0, 'desc']],
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } ,
