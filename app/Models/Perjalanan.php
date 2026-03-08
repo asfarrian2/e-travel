@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class Perjalanan extends Model
 {
@@ -47,6 +48,20 @@ class Perjalanan extends Model
             $model->id_perjalanan = 'pt' . $tahun->tahun . str_pad($number, 9, '0', STR_PAD_LEFT);
         });
     }
+
+    public function getNomorPerjalananAttribute()
+    {
+        // ambil 9 digit urutan dari id_perjalanan
+        $urut = substr($this->id_perjalanan, -9);
+
+        // jadikan 4 digit
+        $nomor = str_pad((int)$urut, 4, '0', STR_PAD_LEFT);
+
+        // ambil tahun dari tanggal
+        $tahun = \Carbon\Carbon::parse($this->tgl)->format('Y');
+
+        return "NPJ/".$nomor."/".$tahun;
+    }
     
     //Relasi ke User
     public function pptk()
@@ -64,6 +79,12 @@ class Perjalanan extends Model
     public function pelperjadin()
     {
         return $this->hasMany(Pelperjadin::class, 'id_perjalanan', 'id_perjalanan');
+    }
+
+    //Relasi ke Rincian Pelaksana
+    public function subspj()
+    {
+        return $this->hasMany(Subspj::class, 'id_perjalanan', 'id_perjalanan');
     }
 
 }

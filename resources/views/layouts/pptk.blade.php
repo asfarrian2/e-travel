@@ -146,6 +146,12 @@
                             <li @if(Request::is('perjalanan/diklat*')) class="mm-active" @endif><a href="/perjalanan/diklat" @if(Request::is('perjalanan/diklat*')) class="mm-active" @endif>Peserta Diklat</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a class="ai-icon" href="/pengajuanspj" aria-expanded="false" @if(Request::is('pengajuanspj*')) style="background-color: #eefaf9;" @endif>
+							<i class="flaticon-017-clipboard"></i>
+							<span class="nav-text">Pengajuan SPJ</span>
+						</a>
+                    </li>
                     <div class="copyright">
                     <p><strong>Other</strong></p>
                     </div>

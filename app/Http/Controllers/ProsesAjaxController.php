@@ -108,6 +108,42 @@ class ProsesAjaxController extends Controller
         }
     }
 
+    public function getSubKegiatanJenis(Request $request)
+    {
+        $jenis = $request->jenis;
+
+        $data = Anggaran::with('subkegiatan')
+            ->where('id_user', Auth::user()->id)
+            ->where('id_tahun', Auth::user()->id_tahun)
+            ->whereHas('rincian', function ($q) use ($jenis) {
+                $q->where('jenis', $jenis);
+            })
+            ->get()
+            ->unique('id_subkegiatan')
+            ->values();
+
+        return response()->json($data);
+    }
+
+    public function getKodeRekeningJenis(Request $request)
+    {
+        $id_sub = $request->id_subkegiatan;
+        $jenis  = $request->jenis;
+
+        $data = Anggaran::with('rekening')
+            ->where('id_subkegiatan', $id_sub)
+            ->where('id_user', Auth::user()->id)
+            ->where('id_tahun', Auth::user()->id_tahun)
+            ->whereHas('rincian', function ($q) use ($jenis) {
+                $q->where('jenis', $jenis);
+            })
+            ->get()
+            ->unique('id_rekening')
+            ->values();
+
+        return response()->json($data);
+    }
+
     public function getTujuan(Request $request)
     {
         $search = $request->q;

@@ -312,7 +312,7 @@ class PerjadikController extends Controller
                     'alamat'    => $alamat,
                     'kelompok'  => $kelompok,
                     'jabatan'   => $jabatan,
-                    'jenis'     => 1,
+                    'jenis'     => 3,
                     'kelas'     => 0,
                     'status'    => 1
                 ]);

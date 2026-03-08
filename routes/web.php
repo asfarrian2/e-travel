@@ -12,6 +12,8 @@ use App\Http\Controllers\PerjasumController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\ProsesAjaxController;
 use App\Http\Controllers\RincanggaranController;
+use App\Http\Controllers\RincianspjController;
+use App\Http\Controllers\SpjController;
 use App\Http\Controllers\SubkegiatanController;
 use App\Http\Controllers\TahunController;
 use App\Http\Controllers\UserController;
@@ -135,7 +137,15 @@ Route::post('/perjalanan/diklat/peserta/store', [PesertaController::class, 'stor
 Route::post('/perjalanan/diklat/peserta/edit', [PesertaController::class, 'edit']);
 Route::post('/perjalanan/diklat/peserta/update', [PesertaController::class, 'update'])->name('u.peserta');
 Route::get('/perjalanan/diklat/peserta/hapus/{id_pelaksana}/{id_pelperjadin}', [PesertaController::class, 'hapus']);
-
+//--PPTK-SPJ--
+Route::get('/pengajuanspj', [SpjController::class, 'pptk_view']);
+Route::post('/pengajuanspj/store', [SpjController::class, 'store'])->name('a.spj');
+Route::post('/pengajuanspj/edit', [SpjController::class, 'edit']);
+Route::post('/pengajuanspj/update', [SpjController::class, 'update'])->name('u.spj');
+Route::get('/pengajuanspj/{id_spj}', [SpjController::class, 'pptk_subspj']);
+Route::post('/pengajuanspj/addperjalanan', [SpjController::class, 'add_perjalanan']);
+Route::post('/rincianspj/add-uangharian', [RincianspjController::class, 'formUangharian']);
+Route::post('/rincianspj/simpan-uangharian',[RincianspjController::class,'simpanUangharian']);
 
 });
 
@@ -171,6 +181,9 @@ Route::get('/get-anggaran', [ProsesAjaxController::class, 'getAnggaran'])->name(
 Route::get('/get-subanggaran', [ProsesAjaxController::class, 'getSubAnggaran'])->name('get.subanggaran');
 Route::post('/simpanperjadin-pegawai', [PerjadinController::class, 'simpanPegawai']);
 Route::post('/hapusperjadin-pegawai', [PerjadinController::class, 'hapusPegawai']);
+Route::post('/get-subkegiatan-jenis', [ProsesAjaxController::class,'getSubKegiatanJenis']);
+Route::post('/get-koderekening-jenis', [ProsesAjaxController::class, 'getKodeRekeningJenis']);
 Route::post('/get-koderekening', [ProsesAjaxController::class, 'getPerjKodeRekening'])->name('get.koderekening');
 Route::post('/get-anggaranperjalanan', [ProsesAjaxController::class, 'getPerjAnggaran'])->name('get.anggaranperjalanan');
 Route::get('/get-tujuan', [ProsesAjaxController::class, 'getTujuan'])->name('get.tujuan');
+Route::post('/simpanspj-perjalanan', [SpjController::class, 'simpanPerjalanan']);
